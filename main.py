@@ -4,6 +4,7 @@ from maze import Maze
 from player import Player
 from game import Game
 from clock import Clock
+from enemy import Enemy
 
 pygame.init()
 pygame.font.init()
@@ -32,6 +33,7 @@ class Main:
         maze = Maze(cols, rows)
         game = Game(maze.grid_cells[-1], tile)
         player = Player(tile // 3, tile // 3)
+        enemy = Enemy(10 * tile, 10 * tile)  # Initialize enemy at some location
         clock = Clock()
 
         maze.generate_maze()
@@ -79,6 +81,12 @@ class Main:
             if self.cli_cooldown == 0 and player.check_tower(maze.tower_cell, tile):
                 self.enter_cli_mode(player)
 
+            # Add check if player has reached the enemy
+            if enemy.check_player(player.x, player.y, tile):
+                print("Game Over! Enemy has caught the player!")
+                self.game_over = True
+                # You can add additional logic here like ending the game, reducing health, etc.
+
             # Check if the player has won the game
             if game.is_game_over(player):
                 self.game_over = True
@@ -86,9 +94,12 @@ class Main:
                 player.right_pressed = False
                 player.up_pressed = False
                 player.down_pressed = False
+            
+            # Update the enemy's movement towards the player
+            enemy.update(player.x, player.y, tile)
 
             # Draw the maze, player, and additional game elements
-            self._draw(maze, tile, player, game, clock)
+            self._draw(maze, tile, player, game, clock, enemy)
 
             # Cap the frame rate to 60 FPS
             self.FPS.tick(60)
@@ -124,14 +135,15 @@ class Main:
             else:
                 print("Unknown command. Available commands: 'teleport x y', 'exit', 'quit'.")
 
-    def _draw(self, maze, tile, player, game, clock):
+    def _draw(self, maze, tile, player, game, clock, enemy):
         """
-        Draws all game elements on the screen including maze, player, and time.
+        Draws all game elements on the screen including maze, player, enemy, and time.
         :param maze: Maze object to render.
         :param tile: Size of the tiles/cells in the maze.
         :param player: Player object to render.
         :param game: Game object for game state management.
         :param clock: Clock object for managing time.
+        :param enemy: Enemy object to render.
         """
         # Draw the maze cells
         [cell.draw(self.screen, tile) for cell in maze.grid_cells]
@@ -142,7 +154,10 @@ class Main:
         # Draw the player character
         player.draw(self.screen)
         
-        # Pass the correct arguments to player.update() - tile, grid_cells, and thickness
+        # Draw the enemy character
+        enemy.draw(self.screen)
+        
+        # Update player's movement and handle collision
         player.update(tile, maze.grid_cells, maze.thickness)
 
         # Display instructions and timer

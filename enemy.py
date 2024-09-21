@@ -10,7 +10,7 @@ class Enemy:
         self.color = (250, 0, 0)  # Enemy color (red)
         self.velX = 0  # X-axis velocity
         self.velY = 0  # Y-axis velocity
-        self.speed = 10  # Movement speed
+        self.speed = 0.2  # Movement speed
     
     # Check if the enemy has reached the player
     def check_player(self, player_x, player_y, tile_size):

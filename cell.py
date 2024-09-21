@@ -4,7 +4,7 @@ from random import choice
 class Cell:
     def __init__(self, x, y, thickness):
         """
-        Initialize the cell object at (x, y) with walls and other properties and the end
+        Initialize the cell object at (x, y) with walls and other properties.
         """
 
         self.x = x  # Column index of the cell

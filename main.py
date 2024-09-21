@@ -32,7 +32,7 @@ class Main:
 
         while self.running:
             # Check if 5 seconds have passed since the screen was changed to black
-            if self.is_screen_black and (pygame.time.get_ticks() - self.black_screen_start_time) > 5000:
+            if self.is_screen_black and (pygame.time.get_ticks() - self.black_screen_start_time) > 10000:
                 self.is_screen_black = False  # Reset the flag to change screen color back to white
 
             if self.is_screen_black:

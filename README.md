@@ -1,16 +1,16 @@
 This is the First Version of our Maze
 
-Functionality in the Game:
-Player Generation
-Procedural Maze Generation
-End Point
+-Functionality in the Game:
+Player Generation,
+Procedural Maze Generation,
+End Point,
 Point to Trigger CLI
 
 
-To Play this game, Simply clone this repository
+-To Play this game, Simply clone this repository.
 Ensure you have Pygame and Numpy installed 
 
-Install them using
+-Install them using
 --pip install pygame
 --pip install numpy
 

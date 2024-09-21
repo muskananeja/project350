@@ -10,24 +10,16 @@ pygame.font.init()
 
 class Main:
     def __init__(self, screen):
-        """
-        Initialize the main game class.
-        :param screen: Pygame screen or surface to draw on.
-        """
         self.screen = screen
         self.font = pygame.font.SysFont("impact", 30)
         self.message_color = pygame.Color("cyan")
         self.running = True
         self.game_over = False
         self.FPS = pygame.time.Clock()
-        self.cli_cooldown = 0  # Cooldown timer to prevent re-entering CLI mode immediately
-
+        self.cli_cooldown = 0
+        self.is_screen_black = False  # Flag to determine screen color
+    
     def main(self, frame_size, tile):
-        """
-        The main game loop. Handles game initialization, events, and drawing.
-        :param frame_size: Tuple with the dimensions of the game window.
-        :param tile: Size of the tiles/cells in the maze.
-        """
         cols, rows = frame_size[0] // tile, frame_size[1] // tile
         maze = Maze(cols, rows)
         game = Game(maze.grid_cells[-1], tile)
@@ -38,20 +30,20 @@ class Main:
         clock.start_timer()
 
         while self.running:
-            self.screen.fill("gray")
+            if self.is_screen_black:
+                self.screen.fill("black")
+            else:
+                self.screen.fill("white")
             self.screen.fill(pygame.Color("darkslategray"), (603, 0, 752, 752))
 
-            # Update CLI cooldown timer
             if self.cli_cooldown > 0:
                 self.cli_cooldown -= 1
 
-            # Check for events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
 
-                # If keys are pressed
                 if event.type == pygame.KEYDOWN:
                     if not self.game_over:
                         if event.key == pygame.K_LEFT:
@@ -63,7 +55,6 @@ class Main:
                         if event.key == pygame.K_DOWN:
                             player.down_pressed = True
 
-                # If keys are released
                 if event.type == pygame.KEYUP:
                     if not self.game_over:
                         if event.key == pygame.K_LEFT:
@@ -75,11 +66,9 @@ class Main:
                         if event.key == pygame.K_DOWN:
                             player.down_pressed = False
 
-            # Check if the player has reached the CLI tower (only if cooldown is 0)
             if self.cli_cooldown == 0 and player.check_tower(maze.tower_cell, tile):
                 self.enter_cli_mode(player)
 
-            # Check if the player has won the game
             if game.is_game_over(player):
                 self.game_over = True
                 player.left_pressed = False
@@ -87,39 +76,32 @@ class Main:
                 player.up_pressed = False
                 player.down_pressed = False
 
-            # Draw the maze, player, and additional game elements
             self._draw(maze, tile, player, game, clock)
-
-            # Cap the frame rate to 60 FPS
             self.FPS.tick(60)
 
     def enter_cli_mode(self, player):
-        """
-        Enter the Command-Line Interface (CLI) mode for game control.
-        Allows the player to input commands such as teleporting and exiting CLI mode.
-        :param player: Player object to allow modifications (e.g., teleport).
-        """
         print("You've reached the CLI Tower! Enter commands. Type 'exit' to resume the game.")
         
         while True:
-            command = input("Enter command: ").strip().lower()  # Read command input from user
+            command = input("Enter command: ").strip().lower()
             
             if command == "exit":
                 print("Exiting CLI mode.")
-                self.cli_cooldown = 120  # Set cooldown for 120 frames (~2 seconds at 60 FPS)
-                return  # Exit the CLI mode and resume the game
+                self.cli_cooldown = 120
+                return
             elif command.startswith("teleport"):
                 try:
                     _, x, y = command.split()
-                    player.x = int(x) * 30  # Teleport the player to new coordinates
+                    player.x = int(x) * 30
                     player.y = int(y) * 30
                     print(f"Teleported player to ({x}, {y}).")
+                    self.is_screen_black = True  # Set the flag to change screen color
                     self.cli_cooldown = 120
                     return
                 except ValueError:
                     print("Invalid teleport command. Use 'teleport x y' format.")
             elif command == "quit":
-                pygame.quit()  # Quit the game
+                pygame.quit()
                 sys.exit()
             else:
                 print("Unknown command. Available commands: 'teleport x y', 'exit', 'quit'.")
@@ -170,6 +152,11 @@ class Main:
         self.screen.blit(instructions2, (610, 331))
         self.screen.blit(instructions3, (630, 362))
 
+    def change_screen_color_to_black(self):
+        """
+        Change the screen fill color to black.
+        """
+        self.screen.fill(pygame.Color("black"))
 
 if __name__ == "__main__":
     # Set window size and tile size

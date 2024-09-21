@@ -20,6 +20,7 @@ class Main:
         self.cli_cooldown = 0
         self.is_screen_black = False  # Flag to determine screen color
         self.black_screen_start_time = None  # Variable to store the time when the screen was changed to black
+        self.lost = False  # Flag to determine if the player lost
     
     def main(self, frame_size, tile):
         cols, rows = frame_size[0] // tile, frame_size[1] // tile
@@ -34,7 +35,7 @@ class Main:
 
         while self.running:
             # Check if 5 seconds have passed since the screen was changed to black
-            if self.is_screen_black and (pygame.time.get_ticks() - self.black_screen_start_time) > 8000:
+            if self.is_screen_black and (pygame.time.get_ticks() - self.black_screen_start_time) > 5000:
                 self.is_screen_black = False  # Reset the flag to change screen color back to white
 
             if self.is_screen_black:
@@ -78,9 +79,11 @@ class Main:
 
             # Add check if player has reached the enemy
             if enemy.check_player(player.x, player.y, tile):
-                print("Game Over! Enemy has caught the player!")
+                if not self.game_over:
+                    print("Game Over! Enemy has caught the player!")
                 self.game_over = True
-                # You can add additional logic here like ending the game, reducing health, etc.
+                self.lost = True  # Set the lost flag
+                self.running = False  # Stop the game loop
 
             if game.is_game_over(player):
                 self.game_over = True
@@ -88,12 +91,22 @@ class Main:
                 player.right_pressed = False
                 player.up_pressed = False
                 player.down_pressed = False
+                self.running = False  # Stop the game loop
             
             # Update the enemy's movement towards the player
             enemy.update(player.x, player.y, tile)
 
             self._draw(maze, tile, player, game, clock, enemy)
             self.FPS.tick(60)
+
+        # Display the game over message after the loop ends
+        self._draw(maze, tile, player, game, clock, enemy)
+        pygame.display.flip()
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
 
     def enter_cli_mode(self, player):
         print("You've reached the CLI Tower! Enter commands. Type 'exit' to resume the game.")
@@ -132,7 +145,10 @@ class Main:
         self.instructions()
         if self.game_over:
             clock.stop_timer()
-            self.screen.blit(game.message(), (610, 120))
+            if self.lost:
+                self.screen.blit(game.lose_message(), (610, 120))
+            else:
+                self.screen.blit(game.message(), (610, 120))
         else:
             clock.update_timer()
         self.screen.blit(clock.display_timer(), (625, 200))

@@ -4,6 +4,7 @@ from maze import Maze
 from player import Player
 from game import Game
 from clock import Clock
+from enemy import Enemy
 
 pygame.init()
 pygame.font.init()
@@ -25,6 +26,7 @@ class Main:
         maze = Maze(cols, rows)
         game = Game(maze.grid_cells[-1], tile)
         player = Player(tile // 3, tile // 3)
+        enemy = Enemy(10 * tile, 10 * tile)  # Initialize enemy at some location
         clock = Clock()
 
         maze.generate_maze()
@@ -32,7 +34,7 @@ class Main:
 
         while self.running:
             # Check if 5 seconds have passed since the screen was changed to black
-            if self.is_screen_black and (pygame.time.get_ticks() - self.black_screen_start_time) > 10000:
+            if self.is_screen_black and (pygame.time.get_ticks() - self.black_screen_start_time) > 8000:
                 self.is_screen_black = False  # Reset the flag to change screen color back to white
 
             if self.is_screen_black:
@@ -74,14 +76,23 @@ class Main:
             if self.cli_cooldown == 0 and player.check_tower(maze.tower_cell, tile):
                 self.enter_cli_mode(player)
 
+            # Add check if player has reached the enemy
+            if enemy.check_player(player.x, player.y, tile):
+                print("Game Over! Enemy has caught the player!")
+                self.game_over = True
+                # You can add additional logic here like ending the game, reducing health, etc.
+
             if game.is_game_over(player):
                 self.game_over = True
                 player.left_pressed = False
                 player.right_pressed = False
                 player.up_pressed = False
                 player.down_pressed = False
+            
+            # Update the enemy's movement towards the player
+            enemy.update(player.x, player.y, tile)
 
-            self._draw(maze, tile, player, game, clock)
+            self._draw(maze, tile, player, game, clock, enemy)
             self.FPS.tick(60)
 
     def enter_cli_mode(self, player):
@@ -112,45 +123,22 @@ class Main:
             else:
                 print("Unknown command. Available commands: 'teleport x y', 'exit', 'quit'.")
 
-    def _draw(self, maze, tile, player, game, clock):
-        """
-        Draws all game elements on the screen including maze, player, and time.
-        :param maze: Maze object to render.
-        :param tile: Size of the tiles/cells in the maze.
-        :param player: Player object to render.
-        :param game: Game object for game state management.
-        :param clock: Clock object for managing time.
-        """
-        # Draw the maze cells
+    def _draw(self, maze, tile, player, game, clock, enemy):
         [cell.draw(self.screen, tile) for cell in maze.grid_cells]
-        
-        # Draw the goal point
         game.add_goal_point(self.screen)
-        
-        # Draw the player character
         player.draw(self.screen)
-        
-        # Pass the correct arguments to player.update() - tile, grid_cells, and thickness
+        enemy.draw(self.screen)
         player.update(tile, maze.grid_cells, maze.thickness)
-
-        # Display instructions and timer
         self.instructions()
         if self.game_over:
             clock.stop_timer()
             self.screen.blit(game.message(), (610, 120))
         else:
             clock.update_timer()
-
-        # Display the timer on the screen
         self.screen.blit(clock.display_timer(), (625, 200))
-
-        # Update the display with the new drawings
         pygame.display.flip()
 
     def instructions(self):
-        """
-        Display the game instructions on the screen.
-        """
         instructions1 = self.font.render('Use', True, self.message_color)
         instructions2 = self.font.render('Arrow Keys', True, self.message_color)
         instructions3 = self.font.render('to Move', True, self.message_color)
@@ -159,21 +147,15 @@ class Main:
         self.screen.blit(instructions3, (630, 362))
 
     def change_screen_color_to_black(self):
-        """
-        Change the screen fill color to black.
-        """
         self.screen.fill(pygame.Color("black"))
 
 if __name__ == "__main__":
-    # Set window size and tile size
     window_size = (602, 602)
     screen_size = (window_size[0] + 150, window_size[1])
     tile_size = 30
 
-    # Create the Pygame display window
     screen = pygame.display.set_mode(screen_size)
     pygame.display.set_caption("Maze Game with CLI Tower")
 
-    # Initialize and run the main game
     game = Main(screen)
     game.main(window_size, tile_size)

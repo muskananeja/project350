@@ -18,6 +18,7 @@ class Main:
         self.FPS = pygame.time.Clock()
         self.cli_cooldown = 0
         self.is_screen_black = False  # Flag to determine screen color
+        self.black_screen_start_time = None  # Variable to store the time when the screen was changed to black
     
     def main(self, frame_size, tile):
         cols, rows = frame_size[0] // tile, frame_size[1] // tile
@@ -30,6 +31,10 @@ class Main:
         clock.start_timer()
 
         while self.running:
+            # Check if 5 seconds have passed since the screen was changed to black
+            if self.is_screen_black and (pygame.time.get_ticks() - self.black_screen_start_time) > 5000:
+                self.is_screen_black = False  # Reset the flag to change screen color back to white
+
             if self.is_screen_black:
                 self.screen.fill("black")
             else:
@@ -96,6 +101,7 @@ class Main:
                     player.y = int(y) * 30
                     print(f"Teleported player to ({x}, {y}).")
                     self.is_screen_black = True  # Set the flag to change screen color
+                    self.black_screen_start_time = pygame.time.get_ticks()  # Store the current time
                     self.cli_cooldown = 120
                     return
                 except ValueError:

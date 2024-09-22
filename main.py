@@ -13,7 +13,7 @@ class Main:
     def __init__(self, screen):
         self.screen = screen
         self.font = pygame.font.SysFont("impact", 30)
-        self.message_color = pygame.Color("cyan")
+        self.message_color = pygame.Color("white")
         self.running = True
         self.game_over = False
         self.FPS = pygame.time.Clock()
@@ -47,8 +47,8 @@ class Main:
             if self.is_screen_black:
                 self.screen.fill("black")
             else:
-                self.screen.fill("white")
-            self.screen.fill(pygame.Color("darkslategray"), (603, 0, 752, 752))
+                self.screen.fill("gray")
+            self.screen.fill(pygame.Color("black"), (603, 0, 752, 752))
 
             if self.cli_cooldown > 0:
                 self.cli_cooldown -= 1

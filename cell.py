@@ -6,6 +6,7 @@ class Cell:
         """
         Initialize the cell object at (x, y) with walls and other properties.
         """
+
         self.x = x  # Column index of the cell
         self.y = y  # Row index of the cell
         self.thickness = thickness  # Thickness of the cell walls

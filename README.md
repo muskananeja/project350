@@ -13,7 +13,7 @@ Welcome to the LookBack MazeGame! This repository contains the first version of 
 1. Clone The Repositiry
 -- git clone https://github.com/muskananeja/project350 
 
-2. Install Required Libraries: Ensure you have Pygame and NumPy installed. You can install them uby running:
+2. Install Required Libraries: Ensure you have Pygame and NumPy installed. You can install them by running:
 -- pip install pygame numpy
 
 3. Run the Game: Navigate to the project directory and execute the following command:
@@ -25,6 +25,7 @@ Welcome to the LookBack MazeGame! This repository contains the first version of 
 - Use the Arrow Keys to navigate your player through the maze.
 
 - Reach the CLI Tower to enter command mode and use the following commands:
+
 -- teleport x y: Teleport the player to coordinates (x, y).
 
 -- exit: Exit the CLI mode and return to the game.

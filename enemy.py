@@ -51,4 +51,5 @@ class Enemy:
         
         # Check if the enemy has reached the player
         if self.check_player(player_x, player_y, tile_size):
+            # Add the action to be taken when the enemy reaches the player
             print("Enemy has reached the player!")

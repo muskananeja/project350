@@ -95,3 +95,24 @@ class Cell:
             return choice(neighbors)
         else:
             return None
+    def get_neighbors(self, cols, rows, grid_cells):
+        """
+        Gets all neighboring cells.
+        """
+        neighbors = []
+
+        top = self.check_cell(self.x, self.y - 1, cols, rows, grid_cells)
+        right = self.check_cell(self.x + 1, self.y, cols, rows, grid_cells)
+        bottom = self.check_cell(self.x, self.y + 1, cols, rows, grid_cells)
+        left = self.check_cell(self.x - 1, self.y, cols, rows, grid_cells)
+
+        if top:
+            neighbors.append(top)
+        if right:
+            neighbors.append(right)
+        if bottom:
+            neighbors.append(bottom)
+        if left:
+            neighbors.append(left)
+
+        return neighbors

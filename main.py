@@ -21,6 +21,8 @@ class Main:
         self.is_screen_black = False  # Flag to determine screen color
         self.black_screen_start_time = None  # Variable to store the time when the screen was changed to black
         self.lost = False  # Flag to determine if the player lost
+        self.show_answer = False  # Flag to determine if the answer should be shown
+        self.answer_start_time = None  # Variable to store the time when the answer was shown
     
     def main(self, frame_size, tile):
         cols, rows = frame_size[0] // tile, frame_size[1] // tile
@@ -35,8 +37,12 @@ class Main:
 
         while self.running:
             # Check if 5 seconds have passed since the screen was changed to black
-            if self.is_screen_black and (pygame.time.get_ticks() - self.black_screen_start_time) > 5000:
+            if self.is_screen_black and (pygame.time.get_ticks() - self.black_screen_start_time) > 10000:
                 self.is_screen_black = False  # Reset the flag to change screen color back to white
+
+            # Check if 5 seconds have passed since the answer was shown
+            if self.show_answer and (pygame.time.get_ticks() - self.answer_start_time) > 10000:
+                self.show_answer = False  # Reset the flag to stop showing the answer
 
             if self.is_screen_black:
                 self.screen.fill("black")
@@ -75,7 +81,7 @@ class Main:
                             player.down_pressed = False
 
             if self.cli_cooldown == 0 and player.check_tower(maze.tower_cell, tile):
-                self.enter_cli_mode(player)
+                self.enter_cli_mode(player, maze)
 
             # Add check if player has reached the enemy
             if enemy.check_player(player.x, player.y, tile):
@@ -108,7 +114,7 @@ class Main:
                     pygame.quit()
                     sys.exit()
 
-    def enter_cli_mode(self, player):
+    def enter_cli_mode(self, player, maze):
         print("You've reached the CLI Tower! Enter commands. Type 'exit' to resume the game.")
         
         while True:
@@ -133,8 +139,18 @@ class Main:
             elif command == "quit":
                 pygame.quit()
                 sys.exit()
+            elif command == "answer":
+                print("Showing the answer for 5 seconds.")
+                maze.solve_maze()  # Solve the maze to get the solution path
+                self.show_answer = True  # Set the flag to show the answer
+                self.answer_start_time = pygame.time.get_ticks()  # Store the current time
+                # Teleport the player to position (1, 1)
+                player.x = 1 * 30
+                player.y = 1 * 30
+                print("Teleported player to (1, 1).")
+                return
             else:
-                print("Unknown command. Available commands: 'teleport x y', 'exit', 'quit'.")
+                print("Unknown command. Available commands: 'teleport x y', 'exit', 'quit', 'answer'.")
 
     def _draw(self, maze, tile, player, game, clock, enemy):
         [cell.draw(self.screen, tile) for cell in maze.grid_cells]
@@ -152,7 +168,24 @@ class Main:
         else:
             clock.update_timer()
         self.screen.blit(clock.display_timer(), (625, 200))
+        if self.show_answer:
+            self.draw_answer(maze, tile)
         pygame.display.flip()
+
+    def draw_answer(self, maze, tile):
+        """
+        Draws the solution path on the screen with semi-transparent yellow color.
+        :param maze: The maze object.
+        :param tile: Size of each cell in pixels.
+        """
+        # Create a semi-transparent surface
+        overlay = pygame.Surface((tile, tile), pygame.SRCALPHA)
+        overlay.fill((255, 255, 0, 128))  # Yellow color with 50% opacity
+
+        for cell in maze.solution_path:  # Use the solution path to draw the answer
+            x = cell.x * tile
+            y = cell.y * tile
+            self.screen.blit(overlay, (x, y))
 
     def instructions(self):
         instructions1 = self.font.render('Use', True, self.message_color)

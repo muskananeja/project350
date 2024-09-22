@@ -5,7 +5,7 @@ pygame.font.init()
 class Game:
     def __init__(self, goal_cell, tile):
         self.font = pygame.font.SysFont("impact", 35)
-        self.message_color = pygame.Color("black")
+        self.message_color = pygame.Color("white")
         self.goal_cell = goal_cell
         self.tile = tile
 

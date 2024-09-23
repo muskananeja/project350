@@ -4,7 +4,7 @@ class Player:
     def __init__(self, x, y):
         self.x = int(x)
         self.y = int(y)
-        self.player_size = 20
+        self.player_size = 50
         self.rect = pygame.Rect(self.x, self.y, self.player_size, self.player_size)
         self.color = (250, 120, 60)
         self.velX = 0
@@ -14,9 +14,14 @@ class Player:
         self.up_pressed = False
         self.down_pressed = False
         self.speed = 4
-        self.image_path = 'img/player.png'  # Path to the player image
-        self.image = pygame.image.load(self.image_path)  # Load the image
-        self.image = pygame.transform.scale(self.image, (self.player_size, self.player_size))  # Scale the image
+
+        # Load multiple images for animation
+        self.image_paths = ['img/player/player1.png', 'img/player/player2.png', 'img/player/player3.png', 'img/player/player4.png', 'img/player/player5.png', 'img/player/player6.png', 'img/player/player7.png', 'img/player/player8.png', 'img/player/player9.png']  # List of image paths
+        self.images = [pygame.image.load(img_path) for img_path in self.image_paths]  # Load images
+        self.images = [pygame.transform.scale(img, (self.player_size, self.player_size)) for img in self.images]  # Scale images
+        self.current_image_index = 0  # Index of the current image
+        self.animation_speed = 5  # Number of frames to wait before switching to the next image
+        self.frame_count = 0  # Frame counter to control animation speed
 
     def check_tower(self, tower_cell, tile_size):
         """Check if the player has reached the CLI tower."""
@@ -90,8 +95,15 @@ class Player:
         # Update the player's rectangle for rendering
         self.rect.topleft = (int(self.x), int(self.y))
 
+        # Update the frame count and switch to the next image if needed
+        self.frame_count += 1
+        if self.frame_count >= self.animation_speed:
+            self.frame_count = 0
+            self.current_image_index = (self.current_image_index + 1) % len(self.images)
+
     def draw(self, screen):
-        screen.blit(self.image, (self.x, self.y))  # Draw the image at the player's position
+        # Draw the current image at the player's position
+        screen.blit(self.images[self.current_image_index], (self.x, self.y))
 
     def move(self, dx, dy):
         self.x += dx

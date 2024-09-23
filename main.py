@@ -104,6 +104,9 @@ class Main:
             # Update the enemy's movement towards the player
             enemy.update(player.x, player.y, tile)
 
+            # Update the player's position
+            player.update(tile, maze.grid_cells, 2)  # Assuming wall thickness is 2
+
             self._draw(maze, tile, player, game, clock, enemy)
             self.FPS.tick(60)
 
@@ -115,6 +118,13 @@ class Main:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+
+    def _draw(self, maze, tile, player, game, clock, enemy):
+        maze.draw(self.screen)
+        player.draw(self.screen)  # Draw the player
+        enemy.draw(self.screen)  # Draw the enemy
+        game.draw(self.screen)
+        clock.draw(self.screen)
 
     def enter_cli_mode(self, player, maze):
         print("You've reached the CLI Tower! Enter commands. Type 'exit' to resume the game.")

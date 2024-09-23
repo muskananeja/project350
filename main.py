@@ -1,10 +1,12 @@
-import pygame
 import sys
-from maze import Maze
-from player import Player
-from game import Game
+
+import pygame
+
 from clock import Clock
 from enemy import Enemy
+from game import Game
+from maze import Maze
+from player import Player
 
 pygame.init()
 pygame.font.init()
@@ -122,7 +124,7 @@ class Main:
             
             if command == "exit":
                 print("Exiting CLI mode.")
-                self.cli_cooldown = 120
+                self.cli_cooldown = 240
                 return
             elif command.startswith("teleport"):
                 try:

@@ -146,10 +146,7 @@ class Main:
                 maze.solve_maze()  # Solve the maze to get the solution path
                 self.show_answer = True  # Set the flag to show the answer
                 self.answer_start_time = pygame.time.get_ticks()  # Store the current time
-                # Teleport the player to position (1, 1)
-                player.x = 1 * 30
-                player.y = 1 * 30
-                print("Teleported player to (1, 1).")
+
                 return
             else:
                 print("Unknown command. Available commands: 'teleport x y', 'exit', 'quit', 'answer'.")

@@ -134,7 +134,7 @@ class Main:
                     print(f"Teleported player to ({x}, {y}).")
                     self.is_screen_black = True  # Set the flag to change screen color
                     self.black_screen_start_time = pygame.time.get_ticks()  # Store the current time
-                    self.cli_cooldown = 120
+                    self.cli_cooldown = 240
                     return
                 except ValueError:
                     print("Invalid teleport command. Use 'teleport x y' format.")
@@ -146,7 +146,7 @@ class Main:
                 maze.solve_maze()  # Solve the maze to get the solution path
                 self.show_answer = True  # Set the flag to show the answer
                 self.answer_start_time = pygame.time.get_ticks()  # Store the current time
-
+                self.cli_cooldown = 240
                 return
             else:
                 print("Unknown command. Available commands: 'teleport x y', 'exit', 'quit', 'answer'.")

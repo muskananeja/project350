@@ -14,6 +14,9 @@ class Player:
         self.up_pressed = False
         self.down_pressed = False
         self.speed = 4
+        self.image_path = 'img/player.png'  # Path to the player image
+        self.image = pygame.image.load(self.image_path)  # Load the image
+        self.image = pygame.transform.scale(self.image, (self.player_size, self.player_size))  # Scale the image
 
     def check_tower(self, tower_cell, tile_size):
         """Check if the player has reached the CLI tower."""
@@ -59,10 +62,6 @@ class Player:
                 if self.y + self.player_size >= current_cell_abs_y + tile - thickness:
                     self.velY = 0
 
-    def draw(self, screen):
-        """Draw the player on the screen."""
-        pygame.draw.rect(screen, self.color, self.rect)
-
     def update(self, tile, grid_cells, thickness):
         """Update the player's position based on movement flags and check for wall collisions."""
         # Set the velocity based on pressed keys
@@ -90,3 +89,10 @@ class Player:
 
         # Update the player's rectangle for rendering
         self.rect.topleft = (int(self.x), int(self.y))
+
+    def draw(self, screen):
+        screen.blit(self.image, (self.x, self.y))  # Draw the image at the player's position
+
+    def move(self, dx, dy):
+        self.x += dx
+        self.y += dy

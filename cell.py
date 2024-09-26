@@ -41,9 +41,11 @@ class Cell:
         if self.walls['left']:
             pygame.draw.line(sc, pygame.Color('black'), (x, y + tile), (x, y), self.thickness)
 
-        # Draw the tower (if this cell contains the CLI tower)
         if self.is_tower:
-            pygame.draw.circle(sc, pygame.Color('red'), (x + tile // 2, y + tile // 2), tile // 4)
+            # Load the custom image
+            custom_image = pygame.image.load('img/tower.png')
+            custom_image = pygame.transform.scale(custom_image, (tile, tile))
+            sc.blit(custom_image, (x, y))
 
     def check_cell(self, x, y, cols, rows, grid_cells):
         """

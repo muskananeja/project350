@@ -104,6 +104,9 @@ class Main:
             # Update the enemy's movement towards the player
             enemy.update(player.x, player.y, tile)
 
+            # Update the player's position
+            player.update(tile, maze.grid_cells, 2)  # Assuming wall thickness is 2
+
             self._draw(maze, tile, player, game, clock, enemy)
             self.FPS.tick(60)
 
@@ -115,6 +118,13 @@ class Main:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+
+    def _draw(self, maze, tile, player, game, clock, enemy):
+        maze.draw(self.screen)
+        player.draw(self.screen)  # Draw the player
+        enemy.draw(self.screen)  # Draw the enemy
+        game.draw(self.screen)
+        clock.draw(self.screen)
 
     def enter_cli_mode(self, player, maze):
         print("You've reached the CLI Tower! Enter commands. Type 'exit' to resume the game.")
@@ -134,7 +144,7 @@ class Main:
                     print(f"Teleported player to ({x}, {y}).")
                     self.is_screen_black = True  # Set the flag to change screen color
                     self.black_screen_start_time = pygame.time.get_ticks()  # Store the current time
-                    self.cli_cooldown = 120
+                    self.cli_cooldown = 240
                     return
                 except ValueError:
                     print("Invalid teleport command. Use 'teleport x y' format.")
@@ -146,10 +156,7 @@ class Main:
                 maze.solve_maze()  # Solve the maze to get the solution path
                 self.show_answer = True  # Set the flag to show the answer
                 self.answer_start_time = pygame.time.get_ticks()  # Store the current time
-                # Teleport the player to position (1, 1)
-                player.x = 1 * 30
-                player.y = 1 * 30
-                print("Teleported player to (1, 1).")
+                self.cli_cooldown = 240
                 return
             else:
                 print("Unknown command. Available commands: 'teleport x y', 'exit', 'quit', 'answer'.")

@@ -5,13 +5,15 @@ class Enemy:
     def __init__(self, x, y):
         self.x = int(x)  # Initial X position
         self.y = int(y)  # Initial Y position
-        self.enemy_size = 10  # Size of the enemy
-        self.rect = pygame.Rect(self.x, self.y, self.enemy_size, self.enemy_size)  # Rectangle for rendering and collision
-        self.color = (250, 0, 0)  # Enemy color (red)
+        self.enemy_size = 25  # Size of the enemy
+        self.rect = pygame.Rect(self.x, self.y, self.enemy_size, self.enemy_size)  # Rectangle for rendering and collisio
         self.velX = 0  # X-axis velocity
         self.velY = 0  # Y-axis velocity
         self.speed = 0.2  # Movement speed
-    
+        self.image_path = 'img/enemy.png'  # Path to the enemy image
+        self.image = pygame.image.load(self.image_path)  # Load the image
+        self.image = pygame.transform.scale(self.image, (self.enemy_size, self.enemy_size))  # Scale the image
+
     # Check if the enemy has reached the player
     def check_player(self, player_x, player_y, tile_size):
         """Check if the enemy has reached the player."""
@@ -20,7 +22,7 @@ class Enemy:
     # Draw the enemy on the screen
     def draw(self, screen):
         """Draw the enemy on the screen."""
-        pygame.draw.rect(screen, self.color, self.rect)
+        screen.blit(self.image, (self.x, self.y))  # Draw the image at the enemy's position
     
     # Update the enemy's position, moving it towards the player
     def update(self, player_x, player_y, tile_size):

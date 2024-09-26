@@ -43,25 +43,25 @@ class Main:
             # Check if 5 seconds have passed since the screen was changed to black
             if self.is_screen_black and (pygame.time.get_ticks() - self.black_screen_start_time) > 10000:
                 self.is_screen_black = False  # Reset the flag to change screen color back to white
-
+        
             # Check if 5 seconds have passed since the answer was shown
             if self.show_answer and (pygame.time.get_ticks() - self.answer_start_time) > 10000:
                 self.show_answer = False  # Reset the flag to stop showing the answer
-
+        
             if self.is_screen_black:
                 self.screen.fill("black")
             else:
                 self.screen.fill("gray")
             self.screen.fill(pygame.Color("black"), (603, 0, 752, 752))
-
+        
             if self.cli_cooldown > 0:
                 self.cli_cooldown -= 1
-
+        
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-
+        
                 if event.type == pygame.KEYDOWN:
                     if not self.game_over:
                         if event.key == pygame.K_LEFT:
@@ -72,7 +72,7 @@ class Main:
                             player.up_pressed = True
                         if event.key == pygame.K_DOWN:
                             player.down_pressed = True
-
+        
                 if event.type == pygame.KEYUP:
                     if not self.game_over:
                         if event.key == pygame.K_LEFT:
@@ -83,10 +83,10 @@ class Main:
                             player.up_pressed = False
                         if event.key == pygame.K_DOWN:
                             player.down_pressed = False
-
+        
             if self.cli_cooldown == 0 and player.check_tower(maze.tower_cell, tile):
                 self.enter_cli_mode(player, maze)
-
+        
             # Add check if player has reached the enemy
             if enemy.check_player(player.x, player.y, tile):
                 if not self.game_over:
@@ -94,7 +94,7 @@ class Main:
                 self.game_over = True
                 self.lost = True  # Set the lost flag
                 self.running = False  # Stop the game loop
-
+        
             if game.is_game_over(player):
                 self.game_over = True
                 player.left_pressed = False
@@ -105,10 +105,9 @@ class Main:
             
             # Update the enemy's movement towards the player
             enemy.update(player.x, player.y, tile)
-
             # Update the player's position
             player.update(tile, maze.grid_cells, 2)  # Assuming wall thickness is 2
-
+        
             self._draw(maze, tile, player, game, clock, enemy)
             self.FPS.tick(60)
 
@@ -163,13 +162,14 @@ class Main:
             else:
                 print("Unknown command. Available commands: 'teleport x y', 'exit', 'quit', 'answer'.")
 
+    # Update the call to instructions in the _draw method
     def _draw(self, maze, tile, player, game, clock, enemy):
         [cell.draw(self.screen, tile) for cell in maze.grid_cells]
         game.add_goal_point(self.screen)
         player.draw(self.screen)
         enemy.draw(self.screen)
         player.update(tile, maze.grid_cells, maze.thickness)
-        self.instructions()
+        self.instructions(player)  # Pass the player object to the instructions method
         if self.game_over:
             clock.stop_timer()
             if self.lost:
@@ -197,8 +197,8 @@ class Main:
             x = cell.x * tile
             y = cell.y * tile
             self.screen.blit(overlay, (x, y))
-
-    def instructions(self):
+    
+    def instructions(self, player):
         instructions1 = self.font.render('Use', True, self.message_color)
         instructions2 = self.font.render('Arrow Keys', True, self.message_color)
         instructions3 = self.font.render('to Move', True, self.message_color)
@@ -206,7 +206,8 @@ class Main:
         commandslist1 = self.font1.render('answer = Shows the Path to Exit', True, self.message_color1)
         commandslist2 = self.font1.render('teleport x y = Teleports to X, Y', True, self.message_color1)
         commandslist3 = self.font1.render('exit = Exit the CLI', True, self.message_color1)
-
+        playercoordinates = self.font1.render(f"Player coordinates: ({player.x//28.75}, {player.y//28.75})", True, self.message_color)
+    
         self.screen.blit(instructions1, (650, 300))
         self.screen.blit(instructions2, (605, 331))
         self.screen.blit(instructions3, (625, 362))
@@ -214,6 +215,8 @@ class Main:
         self.screen.blit(commandslist1, (610, 425))
         self.screen.blit(commandslist2, (610, 437))        
         self.screen.blit(commandslist3, (610, 449))
+        self.screen.blit(playercoordinates, (610, 575)) 
+    
 
 
     def change_screen_color_to_black(self):

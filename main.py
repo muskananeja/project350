@@ -14,8 +14,10 @@ pygame.font.init()
 class Main:
     def __init__(self, screen):
         self.screen = screen
-        self.font = pygame.font.SysFont("impact", 30)
+        self.font = pygame.font.Font("fonts/popmedium.ttf", 25)
+        self.font1 = pygame.font.Font("fonts/popmedium.ttf", 8)
         self.message_color = pygame.Color("white")
+        self.message_color1 = pygame.Color("green")
         self.running = True
         self.game_over = False
         self.FPS = pygame.time.Clock()
@@ -200,9 +202,19 @@ class Main:
         instructions1 = self.font.render('Use', True, self.message_color)
         instructions2 = self.font.render('Arrow Keys', True, self.message_color)
         instructions3 = self.font.render('to Move', True, self.message_color)
-        self.screen.blit(instructions1, (655, 300))
-        self.screen.blit(instructions2, (610, 331))
-        self.screen.blit(instructions3, (630, 362))
+        commandsshow = self.font1.render('Available Commands in CLI', True, self.message_color)
+        commandslist1 = self.font1.render('answer = Shows the Path to Exit', True, self.message_color1)
+        commandslist2 = self.font1.render('teleport x y = Teleports to X, Y', True, self.message_color1)
+        commandslist3 = self.font1.render('exit = Exit the CLI', True, self.message_color1)
+
+        self.screen.blit(instructions1, (650, 300))
+        self.screen.blit(instructions2, (605, 331))
+        self.screen.blit(instructions3, (625, 362))
+        self.screen.blit(commandsshow, (610, 410))
+        self.screen.blit(commandslist1, (610, 425))
+        self.screen.blit(commandslist2, (610, 437))        
+        self.screen.blit(commandslist3, (610, 449))
+
 
     def change_screen_color_to_black(self):
         self.screen.fill(pygame.Color("black"))

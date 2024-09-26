@@ -121,11 +121,24 @@ class Main:
                     sys.exit()
 
     def _draw(self, maze, tile, player, game, clock, enemy):
-        maze.draw(self.screen)
-        player.draw(self.screen)  # Draw the player
-        enemy.draw(self.screen)  # Draw the enemy
-        game.draw(self.screen)
-        clock.draw(self.screen)
+        [cell.draw(self.screen, tile) for cell in maze.grid_cells]
+        game.add_goal_point(self.screen)
+        player.draw(self.screen)
+        enemy.draw(self.screen)
+        player.update(tile, maze.grid_cells, maze.thickness)
+        self.instructions(player, enemy)  # Pass both player and enemy objects to the instructions method
+        if self.game_over:
+            clock.stop_timer()
+            if self.lost:
+                self.screen.blit(game.lose_message(), (610, 120))
+            else:
+                self.screen.blit(game.message(), (610, 120))
+        else:
+            clock.update_timer()
+        self.screen.blit(clock.display_timer(), (625, 200))
+        if self.show_answer:
+            self.draw_answer(maze, tile)
+        pygame.display.flip()
 
     def enter_cli_mode(self, player, maze):
         print("You've reached the CLI Tower! Enter commands. Type 'exit' to resume the game.")
@@ -162,27 +175,6 @@ class Main:
             else:
                 print("Unknown command. Available commands: 'teleport x y', 'exit', 'quit', 'answer'.")
 
-    # Update the call to instructions in the _draw method
-    def _draw(self, maze, tile, player, game, clock, enemy):
-        [cell.draw(self.screen, tile) for cell in maze.grid_cells]
-        game.add_goal_point(self.screen)
-        player.draw(self.screen)
-        enemy.draw(self.screen)
-        player.update(tile, maze.grid_cells, maze.thickness)
-        self.instructions(player)  # Pass the player object to the instructions method
-        if self.game_over:
-            clock.stop_timer()
-            if self.lost:
-                self.screen.blit(game.lose_message(), (610, 120))
-            else:
-                self.screen.blit(game.message(), (610, 120))
-        else:
-            clock.update_timer()
-        self.screen.blit(clock.display_timer(), (625, 200))
-        if self.show_answer:
-            self.draw_answer(maze, tile)
-        pygame.display.flip()
-
     def draw_answer(self, maze, tile):
         """
         Draws the solution path on the screen with semi-transparent yellow color.
@@ -198,7 +190,7 @@ class Main:
             y = cell.y * tile
             self.screen.blit(overlay, (x, y))
     
-    def instructions(self, player):
+    def instructions(self, player, enemy):
         instructions1 = self.font.render('Use', True, self.message_color)
         instructions2 = self.font.render('Arrow Keys', True, self.message_color)
         instructions3 = self.font.render('to Move', True, self.message_color)
@@ -206,18 +198,18 @@ class Main:
         commandslist1 = self.font1.render('answer = Shows the Path to Exit', True, self.message_color1)
         commandslist2 = self.font1.render('teleport x y = Teleports to X, Y', True, self.message_color1)
         commandslist3 = self.font1.render('exit = Exit the CLI', True, self.message_color1)
-        playercoordinates = self.font1.render(f"Player coordinates: ({player.x//28.75}, {player.y//28.75})", True, self.message_color)
+        playercoordinates = self.font1.render(f"Player coordinates: ({player.x // 28.75}, {player.y // 28.75})", True, self.message_color)
+        enemycoordinates = self.font1.render(f"Enemy coordinates: ({enemy.x // 28.75}, {enemy.y // 28.75})", True, self.message_color)
     
         self.screen.blit(instructions1, (650, 300))
         self.screen.blit(instructions2, (605, 331))
         self.screen.blit(instructions3, (625, 362))
         self.screen.blit(commandsshow, (610, 410))
         self.screen.blit(commandslist1, (610, 425))
-        self.screen.blit(commandslist2, (610, 437))        
+        self.screen.blit(commandslist2, (610, 437))
         self.screen.blit(commandslist3, (610, 449))
-        self.screen.blit(playercoordinates, (610, 575)) 
-    
-
+        self.screen.blit(playercoordinates, (610, 567))
+        self.screen.blit(enemycoordinates, (610, 579))  # Display enemy coordinates
 
     def change_screen_color_to_black(self):
         self.screen.fill(pygame.Color("black"))

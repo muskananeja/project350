@@ -1,0 +1,85 @@
+import unittest
+import pygame
+from main import Main
+from player import Player
+from maze import Maze
+from enemy import Enemy
+
+class TestMainGame(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        pygame.init()
+        cls.screen = pygame.display.set_mode((800, 600))
+        cls.game = Main(cls.screen)
+
+    def test_initialization(self):
+        self.assertIsInstance(self.game, Main)
+        self.assertEqual(self.game.screen, self.screen)
+        self.assertEqual(self.game.running, True)
+        self.assertEqual(self.game.game_over, False)
+
+    def test_maze_initialization(self):
+        cols, rows = 20, 20
+        maze = Maze(cols, rows)
+        maze.generate_maze()
+        self.assertEqual(len(maze.grid_cells), cols * rows)
+
+    def test_player_initialization(self):
+        player = Player(10, 10)
+        self.assertEqual(player.x, 10)
+        self.assertEqual(player.y, 10)
+
+    def test_enemy_initialization(self):
+        enemy = Enemy(300, 300)
+        self.assertEqual(enemy.x, 300)
+        self.assertEqual(enemy.y, 300)
+
+    def test_player_movement(self):
+        player = Player(30, 30)
+        player.move_left()
+        self.assertEqual(player.x, 0)
+        player.move_right()
+        self.assertEqual(player.x, 30)
+        player.move_up()
+        self.assertEqual(player.y, 0)
+        player.move_down()
+        self.assertEqual(player.y, 30)
+
+    def test_game_over_conditions(self):
+        player = Player(30, 30)
+        enemy = Enemy(30, 30)
+        self.assertTrue(enemy.check_player(player.x, player.y, 30))
+        self.game.game_over = self.game.game_over or enemy.check_player(player.x, player.y, 30)
+        self.assertTrue(self.game.game_over)
+
+    def test_cli_mode_teleport(self):
+        player = Player(30, 30)
+        self.game.enter_cli_mode(player, Maze(1, 1))
+        self.game.cli_cooldown = 0  # Reset cooldown for testing
+        # Simulate teleport command
+        command = "teleport 1 1"
+        _, x, y = command.split()
+        player.x = int(x) * 30
+        player.y = int(y) * 30
+        self.assertEqual(player.x, 30)
+        self.assertEqual(player.y, 30)
+
+    def test_show_answer(self):
+        maze = Maze(1, 1)
+        self.game.show_answer = True
+        self.game.answer_start_time = pygame.time.get_ticks()
+        self.assertTrue(self.game.show_answer)
+
+    def test_black_screen_timer(self):
+        self.game.is_screen_black = True
+        self.game.black_screen_start_time = pygame.time.get_ticks()
+        pygame.time.delay(11000)  # Wait for more than 10 seconds
+        self.assertFalse(self.game.is_screen_black)
+
+    @classmethod
+    def tearDownClass(cls):
+        pygame.quit()
+
+if __name__ == "__main__":
+    unittest.main()

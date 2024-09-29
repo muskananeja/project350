@@ -1,16 +1,18 @@
-import pygame
 from random import choice
+
+import pygame
+
 
 class Cell:
     def __init__(self, x, y, thickness):
         """
         Initialize the cell object at (x, y) with walls and other properties.
         """
-
+        
         self.x = x  # Column index of the cell
         self.y = y  # Row index of the cell
         self.thickness = thickness  # Thickness of the cell walls
-
+        
         # Walls surrounding the cell: top, right, bottom, left
         self.walls = {
             'top': True,
@@ -18,10 +20,10 @@ class Cell:
             'bottom': True,
             'left': True
         }
-
+        
         self.visited = False  # Flag to check if the cell has been visited during maze generation
         self.is_tower = False  # This flag marks whether the cell contains the CLI Tower.
-
+    
     def draw(self, sc, tile):
         """
         Draws the walls of the cell on the screen.
@@ -46,7 +48,7 @@ class Cell:
             custom_image = pygame.image.load('img/tower.png')
             custom_image = pygame.transform.scale(custom_image, (tile, tile))
             sc.blit(custom_image, (x, y))
-
+    
     def check_cell(self, x, y, cols, rows, grid_cells):
         """
         Checks if the cell at position (x, y) exists within the grid boundaries.
@@ -57,6 +59,7 @@ class Cell:
         :param grid_cells: List of all cells in the grid.
         :return: The cell at (x, y) if it exists, otherwise None.
         """
+
         def find_index(x, y):
             """ Helper function to calculate index in a 1D list """
             return x + y * cols
@@ -65,7 +68,7 @@ class Cell:
             return grid_cells[find_index(x, y)]
         else:
             return None
-
+    
     def check_neighbors(self, cols, rows, grid_cells):
         """
         Finds all unvisited neighboring cells and returns one at random.
@@ -97,6 +100,7 @@ class Cell:
             return choice(neighbors)
         else:
             return None
+    
     def get_neighbors(self, cols, rows, grid_cells):
         """
         Gets all neighboring cells.

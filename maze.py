@@ -1,6 +1,7 @@
-import pygame
-from cell import Cell
 import random
+
+from cell import Cell
+
 
 class Maze:
     def __init__(self, cols, rows):
@@ -14,7 +15,7 @@ class Maze:
         self.thickness = 4  # Thickness of the walls
         self.grid_cells = [Cell(col, row, self.thickness) for row in range(self.rows) for col in range(self.cols)]
         self.tower_cell = None  # Holds the CLI Tower cell.
-
+    
     def generate_maze(self):
         """
         Generates the maze using a recursive backtracking algorithm.
@@ -42,6 +43,7 @@ class Maze:
         self.tower_cell = random.choice(self.grid_cells)
         self.tower_cell.is_tower = True  # Mark the tower cell
         return self.grid_cells
+    
     def solve_maze(self):
         """
         Solves the maze using Depth-First Search (DFS) and stores the solution path.
@@ -67,7 +69,7 @@ class Maze:
                     stack.append((neighbor, path + [neighbor]))
 
         return []
-
+    
     def has_wall_between(self, cell1, cell2):
         """
         Checks if there is a wall between two adjacent cells.
@@ -84,6 +86,7 @@ class Maze:
         elif dy == -1:  # cell2 is below cell1
             return cell1.walls['bottom'] or cell2.walls['top']
         return True
+    
     def remove_walls(self, current, next):
         """
         Removes the walls between two adjacent cells.
@@ -105,7 +108,7 @@ class Maze:
         elif dy == -1:  # Next cell is below the current cell
             current.walls['bottom'] = False
             next.walls['top'] = False
-
+    
     def draw(self, sc, tile):
         """
         Draw the maze by drawing each cell.

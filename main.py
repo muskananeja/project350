@@ -11,6 +11,7 @@ from player import Player
 pygame.init()
 pygame.font.init()
 
+
 class Main:
     def __init__(self, screen):
         self.screen = screen
@@ -45,31 +46,31 @@ class Main:
             # Check if 5 seconds have passed since the screen was changed to black
             if self.is_screen_black and (pygame.time.get_ticks() - self.black_screen_start_time) > 10000:
                 self.is_screen_black = False  # Reset the flag to change screen color back to white
-    
+
             # Check if 5 seconds have passed since the answer was shown
             if self.show_answer and (pygame.time.get_ticks() - self.answer_start_time) > 10000:
                 self.show_answer = False  # Reset the flag to stop showing the answer
-    
+
             # Check if 10 seconds have passed since enemy was frozen, and apply appropriate penalty
             if self.enemies_frozen and (pygame.time.get_ticks() - self.freeze_start_time) > 15000:
                 print("Enemies unfrozen, and angry. RUN!!!")
                 self.enemies_frozen = False  # Reset the flag to unfreeze enemies
                 self.freeze_penalty(enemy, player)  # Penalty to increase enemy speed and reduce player speed
-    
+
             if self.is_screen_black:
                 self.screen.fill("black")
             else:
                 self.screen.fill("gray")
             self.screen.fill(pygame.Color("black"), (603, 0, 752, 752))
-    
+
             if self.cli_cooldown > 0:
                 self.cli_cooldown -= 1
-        
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-        
+
                 if event.type == pygame.KEYDOWN:
                     if not self.game_over:
                         if event.key == pygame.K_LEFT:
@@ -80,7 +81,7 @@ class Main:
                             player.up_pressed = True
                         if event.key == pygame.K_DOWN:
                             player.down_pressed = True
-        
+
                 if event.type == pygame.KEYUP:
                     if not self.game_over:
                         if event.key == pygame.K_LEFT:
@@ -91,10 +92,10 @@ class Main:
                             player.up_pressed = False
                         if event.key == pygame.K_DOWN:
                             player.down_pressed = False
-        
+
             if self.cli_cooldown == 0 and player.check_tower(maze.tower_cell, tile):
                 self.enter_cli_mode(player, enemy, maze)
-        
+
             # Add check if player has reached the enemy
             if not enemy.frozen and enemy.check_player(player.x, player.y, tile):
                 if not self.game_over:
@@ -102,7 +103,7 @@ class Main:
                 self.game_over = True
                 self.lost = True  # Set the lost flag
                 self.running = False  # Stop the game loop
-        
+
             if game.is_game_over(player):
                 self.game_over = True
                 player.left_pressed = False
@@ -115,7 +116,7 @@ class Main:
             enemy.update(player.x, player.y, tile)
             # Update the player's position
             player.update(tile, maze.grid_cells, 2)  # Assuming wall thickness is 2
-        
+
             self._draw(maze, tile, player, game, clock, enemy)
             self.FPS.tick(60)
 
@@ -150,10 +151,10 @@ class Main:
 
     def enter_cli_mode(self, player, enemy, maze):
         print("You've reached the CLI Tower! Enter commands. Type 'exit' to resume the game.")
-    
+
         while True:
             command = input("Enter command: ").strip().lower()
-        
+
             if command == "exit":
                 print("Exiting CLI mode.")
                 self.cli_cooldown = 240

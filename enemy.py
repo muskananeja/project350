@@ -1,12 +1,14 @@
 import pygame
 
+
 class Enemy:
     # Initializing enemy object with position, size, and other attributes
     def __init__(self, x, y):
         self.x = int(x)  # Initial X position
         self.y = int(y)  # Initial Y position
         self.enemy_size = 25  # Size of the enemy
-        self.rect = pygame.Rect(self.x, self.y, self.enemy_size, self.enemy_size)  # Rectangle for rendering and collisio
+        self.rect = pygame.Rect(self.x, self.y, self.enemy_size,
+                                self.enemy_size)  # Rectangle for rendering and collisio
         self.velX = 0  # X-axis velocity
         self.velY = 0  # Y-axis velocity
         self.speed = 0.2  # Movement speed

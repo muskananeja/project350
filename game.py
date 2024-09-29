@@ -2,6 +2,7 @@ import pygame
 
 pygame.font.init()
 
+
 class Game:
     def __init__(self, goal_cell, tile):
         self.font = pygame.font.SysFont("impact", 35)

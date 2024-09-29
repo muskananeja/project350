@@ -1,5 +1,6 @@
 import pygame
 
+
 class Player:
     def __init__(self, x, y):
         self.x = int(x)
@@ -16,9 +17,12 @@ class Player:
         self.speed = 4
 
         # Load multiple images for animation
-        self.image_paths = ['img/player/player1.png', 'img/player/player2.png', 'img/player/player3.png', 'img/player/player4.png', 'img/player/player5.png', 'img/player/player6.png']  # List of image paths
+        self.image_paths = ['img/player/player1.png', 'img/player/player2.png', 'img/player/player3.png',
+                            'img/player/player4.png', 'img/player/player5.png',
+                            'img/player/player6.png']  # List of image paths
         self.images = [pygame.image.load(img_path) for img_path in self.image_paths]  # Load images
-        self.images = [pygame.transform.scale(img, (self.player_size, self.player_size)) for img in self.images]  # Scale images
+        self.images = [pygame.transform.scale(img, (self.player_size, self.player_size)) for img in
+                       self.images]  # Scale images
         self.current_image_index = 0  # Index of the current image
         self.animation_speed = 8  # Number of frames to wait before switching to the next image
         self.frame_count = 2  # Frame counter to control animation speed

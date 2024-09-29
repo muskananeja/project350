@@ -52,8 +52,8 @@ class Main:
     
             # Check if 10 seconds have passed since enemy was frozen, and apply appropriate penalty
             if self.enemies_frozen and (pygame.time.get_ticks() - self.freeze_start_time) > 15000:
+                print("Enemies unfrozen, and angry. RUN!!!")
                 self.enemies_frozen = False  # Reset the flag to unfreeze enemies
-                Enemy.speed = 0.2
                 self.freeze_penalty(enemy, player)
     
             if self.is_screen_black:
@@ -96,7 +96,7 @@ class Main:
                 self.enter_cli_mode(player, enemy, maze)
         
             # Add check if player has reached the enemy
-            if enemy.check_player(player.x, player.y, tile):
+            if not enemy.frozen and enemy.check_player(player.x, player.y, tile):
                 if not self.game_over:
                     print("Game Over! Enemy has caught the player!")
                 self.game_over = True
@@ -184,7 +184,7 @@ class Main:
                 print("Freezing all enemies for 10 seconds.")
                 self.enemies_frozen = True  # Set the flag to true to freeze all enemies
                 self.freeze_start_time = pygame.time.get_ticks()  # Store the current time
-                enemy.speed = 0
+                enemy.frozen = True
                 self.cli_cooldown = 240
                 return
             else:
@@ -234,6 +234,7 @@ class Main:
         self.screen.fill(pygame.Color("black"))
 
     def freeze_penalty(self, enemy, player):
+        enemy.frozen = False
         enemy.speed += 1
         player.speed -= 3
 

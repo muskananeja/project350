@@ -13,9 +13,12 @@ class Enemy2:
         self.speed = 5  # Movement speed
         self.move_counter = 0  # Counter for movement delay
         self.move_delay = 0.5  # Frames to wait before the next move
+        self.image_path = 'img/bug.png'  # Path to the enemy image
+        self.image = pygame.image.load(self.image_path)  # Load the image
+        self.image = pygame.transform.scale(self.image, (self.enemy_size, self.enemy_size))  # Scale the image
 
     
-    def check_player(self, player_x, player_y, tile_size, margin=100):
+    def check_player(self, player_x, player_y, tile_size, margin=75):
         """Check if the enemy has reached close to the player within a margin."""
         distance_x = abs(self.x - player_x)
         distance_y = abs(self.y - player_y)
@@ -72,8 +75,8 @@ class Enemy2:
 
     def draw(self, screen):
         """Draw the enemy on the screen."""
-        pygame.draw.rect(screen, self.color, self.rect)
-
+        screen.blit(self.image, (self.x, self.y))
+        
     def update(self, player_x, player_y, tile_size, grid_cells, thickness, screen_width, screen_height):
         """Update the enemy's position, moving it towards the player and avoiding walls."""
         self.move_counter += 1  # Increment frame counter

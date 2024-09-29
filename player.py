@@ -4,7 +4,7 @@ class Player:
     def __init__(self, x, y):
         self.x = int(x)
         self.y = int(y)
-        self.player_size = 10
+        self.player_size = 25
         self.rect = pygame.Rect(self.x, self.y, self.player_size, self.player_size)
         self.color = (250, 120, 60)
         self.velX = 0
@@ -14,6 +14,14 @@ class Player:
         self.up_pressed = False
         self.down_pressed = False
         self.speed = 10
+
+        # Load multiple images for animation
+        self.image_paths = ['img/player/player1.png', 'img/player/player2.png', 'img/player/player3.png', 'img/player/player4.png', 'img/player/player5.png', 'img/player/player6.png']  # List of image paths
+        self.images = [pygame.image.load(img_path) for img_path in self.image_paths]  # Load images
+        self.images = [pygame.transform.scale(img, (self.player_size, self.player_size)) for img in self.images]  # Scale images
+        self.current_image_index = 0  # Index of the current image
+        self.animation_speed = 8  # Number of frames to wait before switching to the next image
+        self.frame_count = 2  # Frame counter to control animation speed
 
     def check_tower(self, tower_cell, tile_size):
         """Check if the player has reached the CLI tower."""
@@ -59,10 +67,6 @@ class Player:
                 if self.y + self.player_size >= current_cell_abs_y + tile - thickness:
                     self.velY = 0
 
-    def draw(self, screen):
-        """Draw the player on the screen."""
-        pygame.draw.rect(screen, self.color, self.rect)
-
     def update(self, tile, grid_cells, thickness):
         """Update the player's position based on movement flags and check for wall collisions."""
         # Set the velocity based on pressed keys
@@ -84,10 +88,23 @@ class Player:
         # Check if the player can move without hitting walls
         self.check_move(tile, grid_cells, thickness)
 
-        # Apply velocity to the player's position, 
-        ##can us ethis for CLI bit of affecting speed
+        # Apply velocity to the player's position
         self.x += self.velX
         self.y += self.velY
 
         # Update the player's rectangle for rendering
         self.rect.topleft = (int(self.x), int(self.y))
+
+        # Update the frame count and switch to the next image if needed
+        self.frame_count += 1
+        if self.frame_count >= self.animation_speed:
+            self.frame_count = 0
+            self.current_image_index = (self.current_image_index + 1) % len(self.images)
+
+    def draw(self, screen):
+        # Draw the current image at the player's position
+        screen.blit(self.images[self.current_image_index], (self.x, self.y))
+
+    def move(self, dx, dy):
+        self.x += dx
+        self.y += dy

@@ -10,14 +10,19 @@ class Enemy2:
         self.color = (250, 120, 60)  # Enemy color
         self.velX = 0  # Velocity on the x-axis
         self.velY = 0  # Velocity on the y-axis
-        self.speed = 8  # Movement speed
+        self.speed = 5  # Movement speed
         self.move_counter = 0  # Counter for movement delay
-        self.move_delay = 2  # Frames to wait before the next move
+        self.move_delay = 0.5  # Frames to wait before the next move
 
-    def check_player(self, player_x, player_y, tile_size):
-        """Check if the enemy has reached the player."""
-        return (self.x // tile_size == player_x // tile_size and
-                self.y // tile_size == player_y // tile_size)
+    
+    def check_player(self, player_x, player_y, tile_size, margin=100):
+        """Check if the enemy has reached close to the player within a margin."""
+        distance_x = abs(self.x - player_x)
+        distance_y = abs(self.y - player_y)
+
+    # Check if the enemy is within the margin area around the player
+        return (distance_x <= tile_size + margin and distance_y <= tile_size + margin)
+
 
     def get_current_cell(self, grid_cells, tile):
         """Get the current cell the enemy is in."""
@@ -116,6 +121,4 @@ class Enemy2:
         # Update the enemy's rectangle for rendering
         self.rect.topleft = (int(self.x), int(self.y))
 
-        # Check if the enemy has reached the player
-        if self.check_player(player_x, player_y, tile_size):
-            print("Enemy has reached the player!")
+       

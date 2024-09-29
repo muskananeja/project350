@@ -32,8 +32,8 @@ class Main:
         maze = Maze(cols, rows)
         game = Game(maze.grid_cells[-1], tile)
         player = Player(tile // 3, tile // 3)
-        enemy = Enemy(20 * tile, 20 * tile)  # Original enemy initialization
-        enemy2 = Enemy2(10 * tile, 10 * tile)  # Initialize your Enemy2 class
+        enemy = Enemy(15 * tile, 15 * tile)  # Original enemy initialization
+        enemy2 = Enemy2(10 * tile, 9 * tile)  # Initialize your Enemy2 class
 
         clock = Clock()
 

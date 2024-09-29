@@ -1,9 +1,8 @@
 import sys
-
 import pygame
-
 from clock import Clock
 from enemy import Enemy
+from enemy2 import Enemy2  # Import your new Enemy2 class
 from game import Game
 from maze import Maze
 from player import Player
@@ -22,25 +21,28 @@ class Main:
         self.game_over = False
         self.FPS = pygame.time.Clock()
         self.cli_cooldown = 0
-        self.is_screen_black = False  # Flag to determine screen color
-        self.black_screen_start_time = None  # Variable to store the time when the screen was changed to black
-        self.lost = False  # Flag to determine if the player lost
-        self.show_answer = False  # Flag to determine if the answer should be shown
-        self.answer_start_time = None  # Variable to store the time when the answer was shown
-    
+        self.is_screen_black = False  
+        self.black_screen_start_time = None  
+        self.lost = False  
+        self.show_answer = False  
+        self.answer_start_time = None  
+
     def main(self, frame_size, tile):
         cols, rows = frame_size[0] // tile, frame_size[1] // tile
         maze = Maze(cols, rows)
         game = Game(maze.grid_cells[-1], tile)
         player = Player(tile // 3, tile // 3)
-        enemy = Enemy(10 * tile, 10 * tile)  # Initialize enemy at some location
+        enemy = Enemy(10 * tile, 10 * tile)  # Original enemy initialization
+        enemy2 = Enemy2(20 * tile, 20 * tile)  # Initialize your Enemy2 class
+
         clock = Clock()
 
         maze.generate_maze()
         clock.start_timer()
 
         while self.running:
-            # Check if 5 seconds have passed since the screen was changed to black
+            
+
             if self.is_screen_black and (pygame.time.get_ticks() - self.black_screen_start_time) > 10000:
                 self.is_screen_black = False  # Reset the flag to change screen color back to white
         
@@ -56,12 +58,12 @@ class Main:
         
             if self.cli_cooldown > 0:
                 self.cli_cooldown -= 1
-        
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-        
+
                 if event.type == pygame.KEYDOWN:
                     if not self.game_over:
                         if event.key == pygame.K_LEFT:
@@ -72,7 +74,7 @@ class Main:
                             player.up_pressed = True
                         if event.key == pygame.K_DOWN:
                             player.down_pressed = True
-        
+
                 if event.type == pygame.KEYUP:
                     if not self.game_over:
                         if event.key == pygame.K_LEFT:
@@ -83,36 +85,39 @@ class Main:
                             player.up_pressed = False
                         if event.key == pygame.K_DOWN:
                             player.down_pressed = False
-        
+
             if self.cli_cooldown == 0 and player.check_tower(maze.tower_cell, tile):
                 self.enter_cli_mode(player, maze)
-        
-            # Add check if player has reached the enemy
+
+            # Check if the player has reached the enemies
             if enemy.check_player(player.x, player.y, tile):
-                if not self.game_over:
-                    print("Game Over! Enemy has caught the player!")
+                print("Game Over! Original Enemy has caught the player!")
                 self.game_over = True
-                self.lost = True  # Set the lost flag
-                self.running = False  # Stop the game loop
-        
+
+            if enemy2.check_player(player.x, player.y, tile):
+                print("Game Over! Enemy2 has caught the player!")
+                self.game_over = True
+            
+            # Check if the player has won the game
             if game.is_game_over(player):
                 self.game_over = True
                 player.left_pressed = False
                 player.right_pressed = False
                 player.up_pressed = False
                 player.down_pressed = False
-                self.running = False  # Stop the game loop
-            
+                self.running = False  
+
             # Update the enemy's movement towards the player
             enemy.update(player.x, player.y, tile)
-            # Update the player's position
-            player.update(tile, maze.grid_cells, 2)  # Assuming wall thickness is 2
-        
-            self._draw(maze, tile, player, game, clock, enemy)
+            enemy2.update(player.x, player.y, tile, maze.grid_cells, maze.thickness)  # Update enemy2
+
+            # Draw the maze, player, and additional game elements
+            self._draw(maze, tile, player, game, clock, enemy, enemy2)
+
             self.FPS.tick(60)
 
         # Display the game over message after the loop ends
-        self._draw(maze, tile, player, game, clock, enemy)
+        self._draw(maze, tile, player, game, clock, enemy, enemy2)
         pygame.display.flip()
         while True:
             for event in pygame.event.get():
@@ -120,25 +125,46 @@ class Main:
                     pygame.quit()
                     sys.exit()
 
-    def _draw(self, maze, tile, player, game, clock, enemy):
+    def _draw(self, maze, tile, player, game, clock, enemy, enemy2):
         [cell.draw(self.screen, tile) for cell in maze.grid_cells]
         game.add_goal_point(self.screen)
         player.draw(self.screen)
         enemy.draw(self.screen)
+        enemy2.draw(self.screen)  # Draw enemy2
         player.update(tile, maze.grid_cells, maze.thickness)
-        self.instructions(player, enemy)  # Pass both player and enemy objects to the instructions method
+        self.instructions(player, enemy, enemy2)
         if self.game_over:
             clock.stop_timer()
-            if self.lost:
-                self.screen.blit(game.lose_message(), (610, 120))
-            else:
-                self.screen.blit(game.message(), (610, 120))
+            self.screen.blit(game.message(), (610, 120))
         else:
             clock.update_timer()
         self.screen.blit(clock.display_timer(), (625, 200))
         if self.show_answer:
             self.draw_answer(maze, tile)
         pygame.display.flip()
+
+    def instructions(self, player, enemy, enemy2):
+        instructions1 = self.font.render('Use', True, self.message_color)
+        instructions2 = self.font.render('Arrow Keys', True, self.message_color)
+        instructions3 = self.font.render('to Move', True, self.message_color)
+        commandsshow = self.font1.render('Available Commands in CLI', True, self.message_color)
+        commandslist1 = self.font1.render('answer = Shows the Path to Exit', True, self.message_color1)
+        commandslist2 = self.font1.render('teleport x y = Teleports to X, Y', True, self.message_color1)
+        commandslist3 = self.font1.render('exit = Exit the CLI', True, self.message_color1)
+        playercoordinates = self.font1.render(f"Player coordinates: ({player.x // 28.75}, {player.y // 28.75})", True, self.message_color)
+        enemycoordinates = self.font1.render(f"Enemy coordinates: ({enemy.x // 28.75}, {enemy.y // 28.75})", True, self.message_color)
+        enemy2coordinates = self.font1.render(f"Enemy2 coordinates: ({enemy2.x // 28.75}, {enemy2.y // 28.75})", True, self.message_color)
+
+        self.screen.blit(instructions1, (650, 300))
+        self.screen.blit(instructions2, (605, 331))
+        self.screen.blit(instructions3, (625, 362))
+        self.screen.blit(commandsshow, (610, 410))
+        self.screen.blit(commandslist1, (610, 425))
+        self.screen.blit(commandslist2, (610, 437))
+        self.screen.blit(commandslist3, (610, 449))
+        self.screen.blit(playercoordinates, (610, 567))
+        self.screen.blit(enemycoordinates, (610, 579))  # Display enemy coordinates
+        self.screen.blit(enemy2coordinates, (610, 591))  # Display enemy2 coordinates
 
     def enter_cli_mode(self, player, maze):
         print("You've reached the CLI Tower! Enter commands. Type 'exit' to resume the game.")
@@ -176,51 +202,23 @@ class Main:
                 print("Unknown command. Available commands: 'teleport x y', 'exit', 'quit', 'answer'.")
 
     def draw_answer(self, maze, tile):
-        """
-        Draws the solution path on the screen with semi-transparent yellow color.
-        :param maze: The maze object.
-        :param tile: Size of each cell in pixels.
-        """
-        # Create a semi-transparent surface
         overlay = pygame.Surface((tile, tile), pygame.SRCALPHA)
         overlay.fill((255, 255, 0, 128))  # Yellow color with 50% opacity
 
-        for cell in maze.solution_path:  # Use the solution path to draw the answer
+        for cell in maze.solution_path:
             x = cell.x * tile
             y = cell.y * tile
             self.screen.blit(overlay, (x, y))
-    
-    def instructions(self, player, enemy):
-        instructions1 = self.font.render('Use', True, self.message_color)
-        instructions2 = self.font.render('Arrow Keys', True, self.message_color)
-        instructions3 = self.font.render('to Move', True, self.message_color)
-        commandsshow = self.font1.render('Available Commands in CLI', True, self.message_color)
-        commandslist1 = self.font1.render('answer = Shows the Path to Exit', True, self.message_color1)
-        commandslist2 = self.font1.render('teleport x y = Teleports to X, Y', True, self.message_color1)
-        commandslist3 = self.font1.render('exit = Exit the CLI', True, self.message_color1)
-        playercoordinates = self.font1.render(f"Player coordinates: ({player.x // 28.75}, {player.y // 28.75})", True, self.message_color)
-        enemycoordinates = self.font1.render(f"Enemy coordinates: ({enemy.x // 28.75}, {enemy.y // 28.75})", True, self.message_color)
-    
-        self.screen.blit(instructions1, (650, 300))
-        self.screen.blit(instructions2, (605, 331))
-        self.screen.blit(instructions3, (625, 362))
-        self.screen.blit(commandsshow, (610, 410))
-        self.screen.blit(commandslist1, (610, 425))
-        self.screen.blit(commandslist2, (610, 437))
-        self.screen.blit(commandslist3, (610, 449))
-        self.screen.blit(playercoordinates, (610, 567))
-        self.screen.blit(enemycoordinates, (610, 579))  # Display enemy coordinates
-
-    def change_screen_color_to_black(self):
-        self.screen.fill(pygame.Color("black"))
 
 if __name__ == "__main__":
+    # Set window size and tile size
     window_size = (602, 602)
     screen_size = (window_size[0] + 150, window_size[1])
     tile_size = 30
 
+    # Create the Pygame display window
     screen = pygame.display.set_mode(screen_size)
-    pygame.display.set_caption("LookBack Maze")
-
-    game = Main(screen)
-    game.main(window_size, tile_size)
+    pygame.display.set_caption("Game Title")
+    
+    main = Main(screen)
+    main.main(window_size, tile_size)

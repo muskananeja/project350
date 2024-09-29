@@ -235,7 +235,7 @@ class Main:
 
     def freeze_penalty(self, enemy, player):
         enemy.speed += 1
-        player.speed -= 2.5
+        player.speed -= 3
 
 
 if __name__ == "__main__":

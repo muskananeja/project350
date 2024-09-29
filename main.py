@@ -95,8 +95,9 @@ class Main:
                 self.game_over = True
 
             if enemy2.check_player(player.x, player.y, tile):
-                print("Game Over! Enemy2 has caught the player!")
-                self.game_over = True
+                print("You have lost visibility")
+                self.screen.fill(pygame.Color("black"))
+
             
             # Check if the player has won the game
             if game.is_game_over(player):
@@ -109,7 +110,7 @@ class Main:
 
             # Update the enemy's movement towards the player
             enemy.update(player.x, player.y, tile)
-            enemy2.update(player.x, player.y, tile, maze.grid_cells, maze.thickness)  # Update enemy2
+            enemy2.update(player.x, player.y, tile, maze.grid_cells, maze.thickness, screen_size[0], screen_size[1])
 
             # Draw the maze, player, and additional game elements
             self._draw(maze, tile, player, game, clock, enemy, enemy2)

@@ -54,7 +54,7 @@ class Main:
             if self.enemies_frozen and (pygame.time.get_ticks() - self.freeze_start_time) > 15000:
                 print("Enemies unfrozen, and angry. RUN!!!")
                 self.enemies_frozen = False  # Reset the flag to unfreeze enemies
-                self.freeze_penalty(enemy, player)
+                self.freeze_penalty(enemy, player)  # Penalty to increase enemy speed and reduce player speed
     
             if self.is_screen_black:
                 self.screen.fill("black")
@@ -184,11 +184,11 @@ class Main:
                 print("Freezing all enemies for 10 seconds.")
                 self.enemies_frozen = True  # Set the flag to true to freeze all enemies
                 self.freeze_start_time = pygame.time.get_ticks()  # Store the current time
-                enemy.frozen = True
+                enemy.frozen = True  # requires separate flag for each enemy
                 self.cli_cooldown = 240
                 return
             else:
-                print("Unknown command. Available commands: 'teleport x y', 'exit', 'quit', 'answer'.")
+                print("Unknown command. Available commands: 'teleport x y', 'answer', 'freeze', 'exit', 'quit'.")
 
     def draw_answer(self, maze, tile):
         """

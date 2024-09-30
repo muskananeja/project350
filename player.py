@@ -13,7 +13,7 @@ class Player:
         self.right_pressed = False
         self.up_pressed = False
         self.down_pressed = False
-        self.speed = 10
+        self.speed = 4
 
         # Load multiple images for animation
         self.image_paths = ['img/player/player1.png', 'img/player/player2.png', 'img/player/player3.png', 'img/player/player4.png', 'img/player/player5.png', 'img/player/player6.png']  # List of image paths

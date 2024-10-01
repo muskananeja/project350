@@ -25,7 +25,9 @@ class Main:
         self.black_screen_start_time = None  
         self.lost = False  
         self.show_answer = False  
-        self.answer_start_time = None  
+        self.answer_start_time = None
+        self.enemies_frozen = False
+        self.freeze_start_time = None
 
     def main(self, frame_size, tile):
         cols, rows = frame_size[0] // tile, frame_size[1] // tile
@@ -34,6 +36,7 @@ class Main:
         player = Player(tile // 3, tile // 3)
         enemy = Enemy(15 * tile, 15 * tile)  # Original enemy initialization
         enemy2 = Enemy2(10 * tile, 9 * tile)  # Initialize your Enemy2 class
+        clock = Clock()
 
         clock = Clock()
 
@@ -93,6 +96,15 @@ class Main:
             if enemy.check_player(player.x, player.y, tile):
                 print("Game Over! Original Enemy has caught the player!")
                 self.game_over = True
+                
+                self.enter_cli_mode(player, enemy, maze)
+
+            if not enemy.frozen and enemy.check_player(player.x, player.y, tile):
+                if not self.game_over:
+                    print("Game Over! Enemy has caught the player!")
+                self.game_over = True
+                self.lost = True  # Set the lost flag
+                self.running = False  # Stop the game loop
 
             if enemy2.check_player(player.x, player.y, tile):
                 print("You have lost visibility")
@@ -115,6 +127,15 @@ class Main:
             # Draw the maze, player, and additional game elements
             self._draw(maze, tile, player, game, clock, enemy, enemy2)
 
+            self.FPS.tick(60)
+
+            self.running = False
+            
+            enemy.update(player.x, player.y, tile)
+            enemy2.update(player.x, player.y, tile, maze.grid_cells, maze.thickness, frame_size[0], frame_size[1])
+            player.update(tile, maze.grid_cells, 2)  # Assuming wall thickness is 2
+
+            self._draw(maze, tile, player, game, clock, enemy, enemy2)
             self.FPS.tick(60)
 
         # Display the game over message after the loop ends
@@ -144,30 +165,7 @@ class Main:
             self.draw_answer(maze, tile)
         pygame.display.flip()
 
-    def instructions(self, player, enemy, enemy2):
-        instructions1 = self.font.render('Use', True, self.message_color)
-        instructions2 = self.font.render('Arrow Keys', True, self.message_color)
-        instructions3 = self.font.render('to Move', True, self.message_color)
-        commandsshow = self.font1.render('Available Commands in CLI', True, self.message_color)
-        commandslist1 = self.font1.render('answer = Shows the Path to Exit', True, self.message_color1)
-        commandslist2 = self.font1.render('teleport x y = Teleports to X, Y', True, self.message_color1)
-        commandslist3 = self.font1.render('exit = Exit the CLI', True, self.message_color1)
-        playercoordinates = self.font1.render(f"Player coordinates: ({player.x // 28.75}, {player.y // 28.75})", True, self.message_color)
-        enemycoordinates = self.font1.render(f"Enemy coordinates: ({enemy.x // 28.75}, {enemy.y // 28.75})", True, self.message_color)
-        enemy2coordinates = self.font1.render(f"Enemy2 coordinates: ({enemy2.x // 28.75}, {enemy2.y // 28.75})", True, self.message_color)
-
-        self.screen.blit(instructions1, (650, 300))
-        self.screen.blit(instructions2, (605, 331))
-        self.screen.blit(instructions3, (625, 362))
-        self.screen.blit(commandsshow, (610, 410))
-        self.screen.blit(commandslist1, (610, 425))
-        self.screen.blit(commandslist2, (610, 437))
-        self.screen.blit(commandslist3, (610, 449))
-        self.screen.blit(playercoordinates, (610, 567))
-        self.screen.blit(enemycoordinates, (610, 579))  # Display enemy coordinates
-        self.screen.blit(enemy2coordinates, (610, 591))  # Display enemy2 coordinates
-
-    def enter_cli_mode(self, player, maze):
+    def enter_cli_mode(self, player, enemy, maze):
         print("You've reached the CLI Tower! Enter commands. Type 'exit' to resume the game.")
         
         while True:
@@ -210,6 +208,36 @@ class Main:
             x = cell.x * tile
             y = cell.y * tile
             self.screen.blit(overlay, (x, y))
+            
+        def instructions(self, player, enemy, enemy2):
+            instructions1 = self.font.render('Use', True, self.message_color)
+            instructions2 = self.font.render('Arrow Keys', True, self.message_color)
+            instructions3 = self.font.render('to Move', True, self.message_color)
+            commandsshow = self.font1.render('Available Commands in CLI', True, self.message_color)
+            commandslist1 = self.font1.render('teleport x y = Teleports to X, Y', True, self.message_color1)
+            commandslist2 = self.font1.render('answer = Shows the Path to Exit', True, self.message_color1)
+            commandslist3 = self.font1.render('freeze = Freezes all enemies', True, self.message_color1)
+            commandslist4 = self.font1.render('exit = Exit the CLI', True, self.message_color1)
+            playercoordinates = self.font1.render(f"Player coordinates: ({player.x // 28.75}, {player.y // 28.75})", True, self.message_color)
+            enemycoordinates = self.font1.render(f"Enemy coordinates: ({enemy.x // 28.75}, {enemy.y // 28.75})", True, self.message_color)
+            enemy2coordinates = self.font1.render(f"Enemy2 coordinates: ({enemy2.x // 28.75}, {enemy2.y // 28.75})", True, self.message_color)
+
+            self.screen.blit(instructions1, (650, 300))
+            self.screen.blit(instructions2, (605, 331))
+            self.screen.blit(instructions3, (625, 362))
+            self.screen.blit(commandsshow, (610, 410))
+            self.screen.blit(commandslist1, (610, 425))
+            self.screen.blit(commandslist2, (610, 437))
+            self.screen.blit(commandslist3, (610, 449))
+            self.screen.blit(commandslist4, (610, 461))
+            self.screen.blit(playercoordinates, (610, 567))
+            self.screen.blit(enemycoordinates, (610, 579))  # Display enemy coordinates
+            self.screen.blit(enemy2coordinates, (610, 591))  # Display enemy2 coordinates
+
+        def freeze_penalty(self, enemy, player):
+            enemy.frozen = False
+            enemy.speed += 1
+            player.speed -= 3
 
 if __name__ == "__main__":
     # Set window size and tile size

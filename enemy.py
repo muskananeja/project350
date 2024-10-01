@@ -13,6 +13,7 @@ class Enemy:
         self.image_path = 'img/enemy.png'  # Path to the enemy image
         self.image = pygame.image.load(self.image_path)  # Load the image
         self.image = pygame.transform.scale(self.image, (self.enemy_size, self.enemy_size))  # Scale the image
+        self.frozen = False
 
     # Check if the enemy has reached the player
     def check_player(self, player_x, player_y, tile_size):
@@ -43,15 +44,19 @@ class Enemy:
             # Move the enemy towards the player
             self.velX = direction_x * self.speed
             self.velY = direction_y * self.speed
-        
+
         # Update the enemy's position
         self.x += self.velX
         self.y += self.velY
-        
+
         # Update the enemy's rectangle for rendering
         self.rect.topleft = (int(self.x), int(self.y))
-        
+
+        # Check if enemy is frozen
+        if self.frozen:
+            self.speed = 0
+
         # Check if the enemy has reached the player
-        if self.check_player(player_x, player_y, tile_size):
+        if not self.frozen and self.check_player(player_x, player_y, tile_size):
             # Add the action to be taken when the enemy reaches the player
             print("Enemy has reached the player!")

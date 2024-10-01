@@ -1,6 +1,10 @@
 
-/__pycache__
-*.pyc
-/__pycache__
-*.pyc
-*.pyc
+__pycache__/cell.cpython-312.pyc
+__pycache__/clock.cpython-312.pyc
+__pycache__/enemy.cpython-312.pyc
+__pycache__/enemy2.cpython-312.pyc
+__pycache__/function.cpython-312.pyc
+__pycache__/game.cpython-312.pyc
+__pycache__/maze.cpython-312.pyc
+__pycache__/player.cpython-312.pyc
+__pycache__/tower.cpython-312.pyc

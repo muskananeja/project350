@@ -1,5 +1,5 @@
 import pygame
-from cell import Cell
+from game_files.cell import Cell
 import random
 
 class Maze:

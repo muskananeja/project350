@@ -1,12 +1,10 @@
 import unittest
 import pygame
-from maze import Maze
-from player import Player  # Adjust imports as necessary
-from enemy import Enemy  # Adjust imports as necessary
-from main import Main  # Adjust imports as necessary
-
-# Assuming Cell class is defined elsewhere in your project
-from cell import Cell
+from game_files.maze import Maze
+from game_files.player import Player
+from game_files.enemy import Enemy
+from main import Main  
+from game_files.cell import Cell
 
 class TestMainGame(unittest.TestCase):
 
@@ -27,9 +25,8 @@ class TestMainGame(unittest.TestCase):
         maze = Maze(cols, rows)
         maze.generate_maze()
         self.assertEqual(len(maze.grid_cells), cols * rows)
-        self.assertIsNotNone(maze.tower_cell)  # Ensure the tower cell is assigned
-        self.assertTrue(maze.tower_cell.is_tower)  # Check if the tower cell is marked correctly
-
+        self.assertIsNotNone(maze.tower_cell) 
+        self.assertTrue(maze.tower_cell.is_tower)
     def test_player_initialization(self):
         player = Player(10, 10)
         self.assertEqual(player.x, 10)

@@ -1,12 +1,12 @@
 import unittest
 import pygame
-from maze import Maze
-from player import Player  # Adjust imports as necessary
-from enemy import Enemy  # Adjust imports as necessary
+from game_files.maze import Maze
+from game_files.player import Player  # Adjust imports as necessary
+from game_files.enemy import Enemy  # Adjust imports as necessary
 from main import Main  # Adjust imports as necessary
 
 # Assuming Cell class is defined elsewhere in your project
-from cell import Cell
+from game_files.cell import Cell
 
 class TestMainGame(unittest.TestCase):
 

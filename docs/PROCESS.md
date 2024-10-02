@@ -46,3 +46,38 @@ The name was suggested based on the following features:
 - Was akin to the process of working things out, ie. looking back and seeing where else we could go
 - It also sounded pretty cool
 While we still weren’t 100% committed to making a video game, we left our first meeting having successfully named ourselves. It was a great start to our project.
+
+
+## 2nd meeting (brainstorming ideas):
+
+2nd meeting (brainstorming ideas):
+The aim of this meeting was to discuss interesting video games we were aware of as well as ideas we had for the game we wanted to make.
+
+Ideas that were pitched:
+
+- 2D side-scroller
+- Multiple levels
+- Multiple characters
+- Pixel-based
+- Bird’s eye view of the world (akin to [GTA 2](https://www.rockstargames.com/games/gta2#:~:text=the%20Rockstar%20Newswire-,Screens,-Specifications))
+- Possibility of using tools like Unreal Engine
+- Doing frontend and backend in javascript
+- Making a game based around Krea (eg. a game where Noor chases the player, a game where the player survives a cyclone on campus, etc.)
+
+Games that were discussed:
+
+- Grand Theft Auto 2
+    - Was discussed as an example of a game that uses a [top-down view](https://www.rockstargames.com/games/gta2#:~:text=the%20Rockstar%20Newswire-,Screens,-Specifications)
+- [Super Mario](https://supermarioplay.com/)
+    - Was used as an example of side-scroller elements that could inspire us
+- [Fear and Hunger](https://store.steampowered.com/app/1002300/Fear__Hunger/)
+    - A dungeon crawler that’s known for being notoriously difficult.
+    - Was brought up as an example of a possible aesthetic design
+- [Greener Grass Awaits](https://yatoimtop.itch.io/greener-grass-awaits)
+    - A game about playing golf while monsters pursue you
+    - Game mechanics are intentionally tedious, in order to complement its horror nature by forcing the player to go through the entire process of hitting the ball while a monster is actively pursuing them
+    - Was brought up as an example of a game whose mechanics complement the experience that the developer wanted to create
+- [Before Your Eyes](https://store.steampowered.com/app/1082430/Before_Your_Eyes/)
+    - A game where time passes by every time the player blinks
+    - Was brought up as an example of a game with a really interesting mechanic
+    - Also used as an example of a game whose mechanic feeds into the narrative of the game

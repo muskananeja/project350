@@ -112,3 +112,19 @@ Eventually, an idea was brought up of a game that punishes the player for messin
 This question felt like a satisfactory gap to explore, and as such, we found a path forward with our 5 sentence abstract.
 
 Our discussion also led us to talk about possible game loops that we could implement that would allow us to explore this idea of dissociation. We wanted something that could be simple enough for a player to complete by themselves, but with enough iterations, make the player want to mess around and see what else was possible. We discussed the idea of making a platformer or a maze-solving game, and ended up informally settling on the maze-solving game for the simple reason that it would be easy to procedurally generate mazes, allowing for pretty much endless possible levels. With enough time and incentive, the player would hopefully start messing with the game and through that, we could implement mechanics that separate the player from the character.
+
+
+## 4th meeting (going over gameplay ideas):
+
+This was a series of impromptu meetings where we briefly discussed gameplay ideas using a particular game as inspiration and showed each other code that we were testing out.
+
+The game that was discussed by Muskan was [This is the Only Level](https://thisistheonlylevel.github.io/), a game where the level layout remains the same throughout, but every time the player completes a level, the controls change in the next iteration. This was brought up as a possible idea to disorient the player or as a penalty for certain player actions, but there was also a question as to how it would add to specifically making the player feel distinct from the character. 
+
+In the next impromptu meeting we had, Muskan presented her maze generating program that used a DFS search algorithm to generate the maze. 
+
+Initial implementations:
+
+The maze generating program was written in Javascript using a tutorial by Conner Bailey on YouTube
+
+Resources:
+[Tutorial](https://youtu.be/nHjqkLV_Tp0?si=vMLV_VadwQ3Cwj9D)

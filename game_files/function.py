@@ -49,11 +49,7 @@ class Main:
         game = Game(maze.grid_cells[-1], tile)
         player = Player(tile // 3, tile // 3)
         enemy = Enemy(15 * tile, 15 * tile)
-
-        if self.in_cli == True:
-            enemy2 = Enemy2(10 * tile, 9 * tile)
-            enemy2_spawn = True
-        
+        enemy2 = Enemy2(10 * tile, 9 * tile)
         clock = Clock()
 
         maze.generate_maze()
@@ -160,7 +156,9 @@ class Main:
         game.add_goal_point(self.screen)
         player.draw(self.screen)
         enemy.draw(self.screen)
-        enemy2.draw(self.screen)
+        if self.in_cli:
+            enemy2.draw(self.screen)
+            self.enemy2_spawn = True
         player.update(tile, maze.grid_cells, maze.thickness)
         self.instructions(player, enemy, enemy2)
         if self.game_over:

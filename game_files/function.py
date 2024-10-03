@@ -1,4 +1,5 @@
 import sys
+import time
 
 import pygame
 
@@ -101,7 +102,7 @@ class Main:
                             player.down_pressed = False
     
             if self.cli_cooldown == 0 and player.check_tower(maze.tower_cell, tile):
-                self.enter_cli_mode(player, enemy, enemy2, maze)
+                self.enter_cli_mode(player, enemy, enemy2, maze, clock)
     
             if not enemy.frozen and enemy.check_player(player.x, player.y, tile):
                 if not self.game_over:
@@ -171,24 +172,29 @@ class Main:
             self.draw_answer(maze, tile)
         pygame.display.flip()
 
-    def enter_cli_mode(self, player, enemy, enemy2, maze):
+    def enter_cli_mode(self, player, enemy, enemy2, maze, clock):
         """
         Enter CLI mode to accept commands from the player.
 
+        :param clock: Clock object, to keep track of time spent in cli and subtract it from game time
         :param player: Player object.
         :param enemy: Enemy object.
         :param enemy2: Enemy 2 (lightbug) object
         :param maze: Maze object.
         """
+        cli_start_time = time.time()
+    
         print(
             "You've reached the CLI Tower! Enter commands. Type 'exit' to resume the game.")
     
         while True:
             command = input("Enter command: ").strip().lower()
-
+        
             if command == "exit":
                 print("Exiting CLI mode.")
                 self.cli_cooldown = 240
+                cli_time_spent = time.time() - cli_start_time
+                clock.start_time += cli_time_spent
                 return
             elif command.startswith("teleport"):
                 try:
@@ -199,6 +205,8 @@ class Main:
                     self.is_screen_black = True
                     self.cli_cooldown = 780
                     self.black_screen_cooldown = 600
+                    cli_time_spent = time.time() - cli_start_time
+                    clock.start_time += cli_time_spent
                     return
                 except ValueError:
                     print("Invalid teleport command. Use 'teleport x y' format.")
@@ -211,6 +219,8 @@ class Main:
                 self.show_answer = True
                 self.cli_cooldown = 480
                 self.answer_cooldown = 300
+                cli_time_spent = time.time() - cli_start_time
+                clock.start_time += cli_time_spent
                 return
             elif command == "freeze":
                 print("Freezing all enemies for 10 seconds.")
@@ -219,6 +229,8 @@ class Main:
                 enemy2.frozen = True
                 self.cli_cooldown = 780
                 self.freeze_cooldown = 600
+                cli_time_spent = time.time() - cli_start_time
+                clock.start_time += cli_time_spent
                 return
             else:
                 print(

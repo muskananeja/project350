@@ -206,7 +206,8 @@ class Main:
                 maze.solve_maze()
                 self.show_answer = True
                 self.answer_start_time = pygame.time.get_ticks()
-                self.cli_cooldown = 1200
+                self.cli_cooldown = 600
+                self.answer_cooldown = 300
                 player.lose_control()
                 player.speed = 2.5
                 return

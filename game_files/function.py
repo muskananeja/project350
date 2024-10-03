@@ -1,5 +1,7 @@
 import sys
+
 import pygame
+
 from game_files.clock import Clock
 from game_files.enemy import Enemy
 from game_files.enemy2 import Enemy2
@@ -28,12 +30,13 @@ class Main:
         self.FPS = pygame.time.Clock()
         self.cli_cooldown = 0
         self.is_screen_black = False
-        self.black_screen_start_time = None
         self.lost = False
         self.show_answer = False
-        self.answer_start_time = None
         self.enemies_frozen = False
-        self.freeze_start_time = None
+        self.freeze_cooldown = 0
+        self.answer_cooldown = 0
+        self.black_screen_cooldown = 0
+        self.tick_counter = 0
 
     def main(self, frame_size, tile):
         """
@@ -54,28 +57,27 @@ class Main:
         clock.start_timer()
 
         while self.running:
-            if self.is_screen_black and (pygame.time.get_ticks() - self.black_screen_start_time) > 10000:
+            self.update_cooldowns()
+    
+            if self.is_screen_black and self.black_screen_cooldown == 0:
                 self.is_screen_black = False
-
-            if self.show_answer and (pygame.time.get_ticks() - self.answer_start_time) > 10000:
+    
+            if self.show_answer and self.answer_cooldown == 0:
                 self.show_answer = False
-
-            if self.enemies_frozen and (pygame.time.get_ticks() - self.freeze_start_time) > 15000:
+    
+            if self.enemies_frozen and self.freeze_cooldown == 0:
                 print("Enemies unfrozen, and angry. RUN!!!")
                 self.enemies_frozen = False
-                self.freeze_penalty(enemy, player)
-
+                self.freeze_penalty(enemy, enemy2, player)
+    
             self.screen.fill("black" if self.is_screen_black else "gray")
             self.screen.fill(pygame.Color("black"), (603, 0, 752, 752))
-
-            if self.cli_cooldown > 0:
-                self.cli_cooldown -= 1
-
+    
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-
+        
                 if event.type == pygame.KEYDOWN:
                     if not self.game_over:
                         if event.key == pygame.K_LEFT:
@@ -86,7 +88,7 @@ class Main:
                             player.up_pressed = True
                         if event.key == pygame.K_DOWN:
                             player.down_pressed = True
-
+        
                 if event.type == pygame.KEYUP:
                     if not self.game_over:
                         if event.key == pygame.K_LEFT:
@@ -97,21 +99,22 @@ class Main:
                             player.up_pressed = False
                         if event.key == pygame.K_DOWN:
                             player.down_pressed = False
-
+    
             if self.cli_cooldown == 0 and player.check_tower(maze.tower_cell, tile):
-                self.enter_cli_mode(player, enemy, maze)
-
+                self.enter_cli_mode(player, enemy, enemy2, maze)
+    
             if not enemy.frozen and enemy.check_player(player.x, player.y, tile):
                 if not self.game_over:
                     print("Game Over! Enemy has caught the player!")
+                    print(f"Playtime (in ticks) = {self.tick_counter}")
                 self.game_over = True
                 self.lost = True
                 self.running = False
-
-            if enemy2.check_player(player.x, player.y, tile):
+    
+            if not enemy2.frozen and enemy2.check_player(player.x, player.y, tile):
                 print("You have lost visibility")
                 self.screen.fill(pygame.Color("black"))
-
+    
             if game.is_game_over(player):
                 self.game_over = True
                 player.left_pressed = False
@@ -119,12 +122,12 @@ class Main:
                 player.up_pressed = False
                 player.down_pressed = False
                 self.running = False
-
+    
             enemy.update(player.x, player.y, tile)
             enemy2.update(player.x, player.y, tile, maze.grid_cells,
                           maze.thickness, frame_size[0], frame_size[1])
             player.update(tile, maze.grid_cells, 2)
-
+    
             self._draw(maze, tile, player, game, clock, enemy, enemy2)
             self.FPS.tick(60)
 
@@ -168,17 +171,18 @@ class Main:
             self.draw_answer(maze, tile)
         pygame.display.flip()
 
-    def enter_cli_mode(self, player, enemy, maze):
+    def enter_cli_mode(self, player, enemy, enemy2, maze):
         """
         Enter CLI mode to accept commands from the player.
 
         :param player: Player object.
         :param enemy: Enemy object.
+        :param enemy2: Enemy 2 (lightbug) object
         :param maze: Maze object.
         """
         print(
             "You've reached the CLI Tower! Enter commands. Type 'exit' to resume the game.")
-
+    
         while True:
             command = input("Enter command: ").strip().lower()
 
@@ -193,8 +197,8 @@ class Main:
                     player.y = int(y) * 30
                     print(f"Teleported player to ({x}, {y}).")
                     self.is_screen_black = True
-                    self.black_screen_start_time = pygame.time.get_ticks()
-                    self.cli_cooldown = 240
+                    self.cli_cooldown = 780
+                    self.black_screen_cooldown = 600
                     return
                 except ValueError:
                     print("Invalid teleport command. Use 'teleport x y' format.")
@@ -210,13 +214,15 @@ class Main:
                 self.answer_start_time = pygame.time.get_ticks()
                 player.lose_control()
                 player.speed = 2.5
+
                 return
             elif command == "freeze":
                 print("Freezing all enemies for 10 seconds.")
                 self.enemies_frozen = True
-                self.freeze_start_time = pygame.time.get_ticks()
                 enemy.frozen = True
-                self.cli_cooldown = 240
+                enemy2.frozen = True
+                self.cli_cooldown = 780
+                self.freeze_cooldown = 600
                 return
             else:
                 print(
@@ -259,12 +265,12 @@ class Main:
             'freeze = Freezes all enemies', True, self.message_color1)
         commandslist4 = self.font1.render(
             'exit = Exit the CLI', True, self.message_color1)
-        playercoordinates = self.font1.render(f"Player coordinates: ({
-                                              player.x // 28.75}, {player.y // 28.75})", True, self.message_color)
-        enemycoordinates = self.font1.render(f"Enemy coordinates: ({
-                                             enemy.x // 28.75}, {enemy.y // 28.75})", True, self.message_color)
-        enemy2coordinates = self.font1.render(f"Enemy2 coordinates: ({
-                                              enemy2.x // 28.75}, {enemy2.y // 28.75})", True, self.message_color)
+        playercoordinates = self.font1.render(f"Player coordinates: ({player.x // 28.75}, {player.y // 28.75})", True,
+                                              self.message_color)
+        enemycoordinates = self.font1.render(f"Enemy coordinates: ({enemy.x // 28.75}, {enemy.y // 28.75})", True,
+                                             self.message_color)
+        enemy2coordinates = self.font1.render(f"Enemy2 coordinates: ({enemy2.x // 28.75}, {enemy2.y // 28.75})", True,
+                                              self.message_color)
 
         self.screen.blit(instructions1, (650, 300))
         self.screen.blit(instructions2, (605, 331))
@@ -278,13 +284,37 @@ class Main:
         self.screen.blit(enemycoordinates, (610, 579))
         self.screen.blit(enemy2coordinates, (610, 591))
 
-    def freeze_penalty(self, enemy, player):
+    def freeze_penalty(self, enemy, enemy2, player):
         """
         Apply a penalty when enemies are unfrozen, increasing their speed and reducing the player's speed.
-
+    
+        :param enemy2: Enemy 2 (lightbug) object
         :param enemy: Enemy object.
         :param player: Player object.
         """
         enemy.frozen = False
-        enemy.speed += 1
-        player.speed -= 3
+        enemy.speed += 1.2
+        enemy2.frozen = False
+        enemy2.speed += 5
+        player.speed -= 1.75
+        if player.speed <= 0:
+            print("Your character refuses to move.")
+            player.speed = 0
+
+    def update_cooldowns(self):
+        """
+        Responsible for updating all the cooldowns every game tick.
+        """
+        self.tick_counter += 1
+    
+        if self.cli_cooldown > 0:
+            self.cli_cooldown -= 1
+    
+        if self.freeze_cooldown > 0:
+            self.freeze_cooldown -= 1
+    
+        if self.answer_cooldown > 0:
+            self.answer_cooldown -= 1
+    
+        if self.black_screen_cooldown > 0:
+            self.black_screen_cooldown -= 1

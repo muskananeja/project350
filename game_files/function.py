@@ -34,7 +34,6 @@ class Main:
         self.answer_start_time = None
         self.enemies_frozen = False
         self.freeze_start_time = None
-        self.in_cli = False
 
     def main(self, frame_size, tile):
         """
@@ -177,9 +176,6 @@ class Main:
         :param enemy: Enemy object.
         :param maze: Maze object.
         """
-
-        self.in_cli = True
-
         print(
             "You've reached the CLI Tower! Enter commands. Type 'exit' to resume the game.")
 
@@ -187,7 +183,6 @@ class Main:
             command = input("Enter command: ").strip().lower()
 
             if command == "exit":
-                self.in_cli = False
                 print("Exiting CLI mode.")
                 self.cli_cooldown = 240
                 return
@@ -199,7 +194,6 @@ class Main:
                     print(f"Teleported player to ({x}, {y}).")
                     self.is_screen_black = True
                     self.black_screen_start_time = pygame.time.get_ticks()
-                    self.in_cli = False
                     self.cli_cooldown = 240
                     return
                 except ValueError:
@@ -212,7 +206,6 @@ class Main:
                 maze.solve_maze()
                 self.show_answer = True
                 self.answer_start_time = pygame.time.get_ticks()
-                self.in_cli = False
                 self.cli_cooldown = 1200
                 player.lose_control()
                 player.speed = 2.5
@@ -222,7 +215,6 @@ class Main:
                 self.enemies_frozen = True
                 self.freeze_start_time = pygame.time.get_ticks()
                 enemy.frozen = True
-                self.in_cli = False
                 self.cli_cooldown = 240
                 return
             else:

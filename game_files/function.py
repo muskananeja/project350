@@ -211,6 +211,10 @@ class Main:
                 self.show_answer = True
                 self.cli_cooldown = 480
                 self.answer_cooldown = 300
+                self.answer_start_time = pygame.time.get_ticks()
+                player.lose_control()
+                player.speed = 2.5
+
                 return
             elif command == "freeze":
                 print("Freezing all enemies for 10 seconds.")

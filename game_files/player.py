@@ -1,4 +1,6 @@
 import pygame
+import random
+import time
 
 
 class Player:
@@ -35,6 +37,22 @@ class Player:
         self.current_image_index = 0
         self.animation_speed = 8  # Number of frames to wait before switching to the next image
         self.frame_count = 2  # Frame counter to control animation speed
+
+
+        # Variables for losing control
+        self.is_losing_control = False
+        self.control_loss_start_time = 0
+        self.control_loss_duration = 10  # 10 seconds of losing control
+
+    def lose_control(self):
+        """Start the control loss process."""
+        self.is_losing_control = True
+        self.control_loss_start_time = time.time()
+
+    def random_movement(self):
+        """Randomly move the player while control is lost."""
+        self.velX = random.choice([-self.speed, 0, self.speed])
+        self.velY = random.choice([-self.speed, 0, self.speed])
 
     def check_tower(self, tower_cell, tile_size):
         """
@@ -101,23 +119,34 @@ class Player:
         :param grid_cells: List of all cells in the grid.
         :param thickness: Thickness of the cell walls.
         """
-        self.velX = 0
-        self.velY = 0
 
-        # Horizontal movement
-        if self.left_pressed and not self.right_pressed:
-            self.velX = -self.speed
-        elif self.right_pressed and not self.left_pressed:
-            self.velX = self.speed
+        # Handle loss of control
+        if self.is_losing_control:
+            self.random_movement()
+            # End control loss after 10 seconds
+            if time.time() - self.control_loss_start_time > self.control_loss_duration:
+                self.is_losing_control = False  # Regain control
 
-        # Vertical movement
-        if self.up_pressed and not self.down_pressed:
-            self.velY = -self.speed
-        elif self.down_pressed and not self.up_pressed:
-            self.velY = self.speed
+        else:
+            # Normal movement control
 
-        # Check if the player can move without hitting walls
-        self.check_move(tile, grid_cells, thickness)
+            self.velX = 0
+            self.velY = 0
+
+            # Horizontal movement
+            if self.left_pressed and not self.right_pressed:
+                self.velX = -self.speed
+            elif self.right_pressed and not self.left_pressed:
+                self.velX = self.speed
+
+            # Vertical movement
+            if self.up_pressed and not self.down_pressed:
+                self.velY = -self.speed
+            elif self.down_pressed and not self.up_pressed:
+                self.velY = self.speed
+
+            # Check if the player can move without hitting walls
+            self.check_move(tile, grid_cells, thickness)
 
         # Apply velocity to the player's position
         self.x += self.velX

@@ -183,8 +183,8 @@ Muskan's pitch
 
 The game will have four mini-levels, each connected by mazes:
 
-Level 1: A 2D platformer inspired by Mario, where the player navigates through a side-scrolling environment. (Inspired by Minecraft 2D Beta).
-Level 2: A Flappy Bird-style game where the player must fly through obstacles. (Inspired by Flappy Bird Noob Version).
+Level 1: A 2D platformer inspired by Mario, where the player navigates through a side-scrolling environment. (Inspired by [Minecraft 2D Beta)](https://www.khanacademy.org/computer-programming/minecraft-2d-beta/1450378472).
+Level 2: A Flappy Bird-style game where the player must fly through obstacles. (Inspired by [Flappy Bird Noob Version](https://khanacademy.org/computer-programming/flappy-bird-noob-version/4826118257377280)).
 Level 3: A choice-based Yes/No story game where the player faces moral decisions.
 Level 4: A final maze to complete the game.
 The journey begins with a 2D platformer inspired by Mario, where players control a blue character through a side-scrolling environment, followed by a Flappy Bird-style game that tests their skills in flying through obstacles. After these challenges, players will face a choice-based Yes/No story game, culminating in a final maze that wraps up their adventure. Throughout the game, players will encounter a green character, representing positive interactions, which triggers easier tasks or mini-games; success in these tasks rewards them with additional commands. 

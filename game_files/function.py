@@ -1,6 +1,7 @@
 import sys
 import time
 
+import colorama
 import pygame
 
 from game_files.clock import Clock
@@ -12,7 +13,7 @@ from game_files.player import Player
 
 pygame.init()
 pygame.font.init()
-
+colorama.init(autoreset=True)
 
 class Main:
     def __init__(self, screen):
@@ -53,6 +54,10 @@ class Main:
         enemy = Enemy(15 * tile, 15 * tile)
         enemy2 = Enemy2(10 * tile, 9 * tile)
         clock = Clock()
+
+        print("\nWelcome to the Labyrinth! We hope you enjoy playing our game  -  Team LookBack\n")
+        print(
+            "Your character wakes up in the corridors of a maze. He looks up and sees demons flying in the sky, flickering lights in the distance. Use the arrow keys to move your character")
 
         maze.generate_maze()
         clock.start_timer()
@@ -105,13 +110,12 @@ class Main:
                 self.enter_cli_mode(player, enemy, enemy2, maze, clock)
 
             if player.speed <= 0:
-                print("Your character refuses to move.")
+                print("You used the CLI too many times. Your character refuses to move.")
                 player.speed = 0
 
             if not enemy.frozen and enemy.check_player(player.x, player.y, tile):
                 if not self.game_over:
-                    print("Game Over! Enemy has caught the player!")
-                    print(f"Playtime (in ticks) = {self.tick_counter}")
+                    print("Game Over! Demon has caught the player!")
                 self.game_over = True
                 self.lost = True
                 self.running = False
@@ -189,13 +193,13 @@ class Main:
         cli_start_time = time.time()
     
         print(
-            "You've reached the CLI Tower! Enter commands. Type 'exit' to resume the game.")
+            "While wandering the labyrinth, your character found the CLI Tower! You can now harness the power of the CLI to aid your character \nEnter commands. Type 'exit' to resume the game.")
     
         while True:
             command = input("Enter command: ").strip().lower()
         
             if command == "exit":
-                print("Exiting CLI mode.")
+                print("Exiting CLI mode.\n")
                 self.cli_cooldown = 240
                 cli_time_spent = time.time() - cli_start_time
                 clock.start_time += cli_time_spent
@@ -205,7 +209,7 @@ class Main:
                     _, x, y = command.split()
                     player.x = int(x) * 30
                     player.y = int(y) * 30
-                    print(f"Teleported player to ({x}, {y}).")
+                    print(f"Your character has been teleported to ({x}, {y}).")
                     self.is_screen_black = True
                     self.cli_cooldown = 780
                     self.black_screen_cooldown = 600
@@ -218,7 +222,7 @@ class Main:
                 pygame.quit()
                 sys.exit()
             elif command == "answer":
-                print("Showing the answer for 5 seconds.")
+                print("You see the solution to the maze, but your character is resisting your control")
                 maze.solve_maze()
                 self.show_answer = True
                 self.cli_cooldown = 480

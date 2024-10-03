@@ -298,11 +298,11 @@ class Main:
         enemy2coordinates = self.font1.render(
             f"Enemy2 coordinates: ({enemy2.x // 28.75}, {enemy2.y // 28.75})",
             True, self.message_color)
-        tickcount = self.font1.render(
-            f"Current playtime (in ticks): {self.tick_counter}",
+        playerspeed = self.font1.render(
+            f"Current player speed: {player.speed}",
             True, self.message_color
         )
-    
+
         self.screen.blit(instructions1, (650, 300))
         self.screen.blit(instructions2, (605, 331))
         self.screen.blit(instructions3, (625, 362))
@@ -311,7 +311,7 @@ class Main:
         self.screen.blit(commandslist2, (610, 437))
         self.screen.blit(commandslist3, (610, 449))
         self.screen.blit(commandslist4, (610, 461))
-        self.screen.blit(tickcount, (610, 555))
+        self.screen.blit(playerspeed, (610, 555))
         self.screen.blit(playercoordinates, (610, 567))
         self.screen.blit(enemycoordinates, (610, 579))
         self.screen.blit(enemy2coordinates, (610, 591))

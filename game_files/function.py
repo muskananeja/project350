@@ -129,7 +129,10 @@ class Main:
 
             player.update(tile, maze.grid_cells, 2)
 
-            self._draw(maze, tile, player, game, clock, enemy, enemy2)
+            self._draw(maze, tile, player, game, clock, enemy)
+            if self.in_cli:
+                self.draw_enemy2(enemy2)
+                self.enemy2_spawn = True
             self.FPS.tick(60)
 
         self._draw(maze, tile, player, game, clock, enemy, enemy2)
@@ -140,7 +143,7 @@ class Main:
                     pygame.quit()
                     sys.exit()
 
-    def _draw(self, maze, tile, player, game, clock, enemy, enemy2):
+    def _draw(self, maze, tile, player, game, clock, enemy):
         """
         Draw all game elements on the screen.
 
@@ -156,11 +159,8 @@ class Main:
         game.add_goal_point(self.screen)
         player.draw(self.screen)
         enemy.draw(self.screen)
-        if self.in_cli:
-            enemy2.draw(self.screen)
-            self.enemy2_spawn = True
         player.update(tile, maze.grid_cells, maze.thickness)
-        self.instructions(player, enemy, enemy2)
+        self.instructions(player, enemy)
         if self.game_over:
             clock.stop_timer()
             if self.lost:
@@ -173,6 +173,9 @@ class Main:
         if self.show_answer:
             self.draw_answer(maze, tile)
         pygame.display.flip()
+
+    def draw_enemy2(self, enemy2):
+        enemy2.draw(self.screen)
 
     def enter_cli_mode(self, player, enemy, maze):
         """
@@ -218,7 +221,7 @@ class Main:
                 self.show_answer = True
                 self.answer_start_time = pygame.time.get_ticks()
                 self.in_cli = False
-                self.cli_cooldown = 1200
+                self.cli_cooldown = 600
                 player.lose_control()
                 player.speed = 2.5
                 return
@@ -249,7 +252,7 @@ class Main:
             y = cell.y * tile
             self.screen.blit(overlay, (x, y))
 
-    def instructions(self, player, enemy, enemy2):
+    def instructions(self, player, enemy):
         """
         Display game instructions and player/enemy coordinates on the screen.
 
@@ -275,8 +278,6 @@ class Main:
                                               player.x // 28.75}, {player.y // 28.75})", True, self.message_color)
         enemycoordinates = self.font1.render(f"Enemy coordinates: ({
                                              enemy.x // 28.75}, {enemy.y // 28.75})", True, self.message_color)
-        enemy2coordinates = self.font1.render(f"Enemy2 coordinates: ({
-                                              enemy2.x // 28.75}, {enemy2.y // 28.75})", True, self.message_color)
 
         self.screen.blit(instructions1, (650, 300))
         self.screen.blit(instructions2, (605, 331))
@@ -288,7 +289,7 @@ class Main:
         self.screen.blit(commandslist4, (610, 461))
         self.screen.blit(playercoordinates, (610, 567))
         self.screen.blit(enemycoordinates, (610, 579))
-        self.screen.blit(enemy2coordinates, (610, 591))
+        
 
     def freeze_penalty(self, enemy, player):
         """

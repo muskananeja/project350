@@ -100,10 +100,14 @@ class Main:
                             player.up_pressed = False
                         if event.key == pygame.K_DOWN:
                             player.down_pressed = False
-    
+
             if self.cli_cooldown == 0 and player.check_tower(maze.tower_cell, tile):
                 self.enter_cli_mode(player, enemy, enemy2, maze, clock)
-    
+
+            if player.speed <= 0:
+                print("Your character refuses to move.")
+                player.speed = 0
+
             if not enemy.frozen and enemy.check_player(player.x, player.y, tile):
                 if not self.game_over:
                     print("Game Over! Enemy has caught the player!")
@@ -111,7 +115,7 @@ class Main:
                 self.game_over = True
                 self.lost = True
                 self.running = False
-    
+
             if not enemy2.frozen and enemy2.check_player(player.x, player.y, tile):
                 print("You have lost visibility")
                 self.screen.fill(pygame.Color("black"))
@@ -325,9 +329,6 @@ class Main:
         enemy2.frozen = False
         enemy2.speed += 5
         player.speed -= 1.75
-        if player.speed <= 0:
-            print("Your character refuses to move.")
-            player.speed = 0
 
     def update_cooldowns(self):
         """

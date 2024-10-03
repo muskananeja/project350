@@ -173,19 +173,24 @@ Aditya’s pitch:
 8) Some levels will need the player to be controlling a specific type of character to get through.
 9) As the spirit gets closer to escaping hell, its power to control other creatures gets weaker, making the gameplay more challenging. This might show in ways of increasing the cooldown between switching NPCs, losing control to dissociation more rapidly or simply not being able to control some stronger NPCs.
 
+Muskan's pitch
+
+1) The game will have four mini-levels, each connected by mazes:
+
+    - Level 1: A 2D platformer inspired by Mario, where the player navigates through a side-scrolling environment. (Inspired by [Minecraft 2D Beta)](https://www.khanacademy.org/computer-programming/minecraft-2d-beta/1450378472).
+    - Level 2: A Flappy Bird-style game where the player must fly through obstacles. (Inspired by [Flappy Bird Noob Version](https://khanacademy.org/computer-programming/flappy-bird-noob-version/4826118257377280)).
+    - Level 3: A choice-based Yes/No story game where the player faces moral decisions.
+    - Level 4: A final maze to complete the game.
+
+2) The journey begins with a 2D platformer inspired by Mario, where players control a blue character through a side-scrolling environment, followed by a Flappy Bird-style game that tests their skills in flying through obstacles. 
+3) After these challenges, players will face a choice-based Yes/No story game, culminating in a final maze that wraps up their adventure. 
+4) Throughout the game, players will encounter a green character, representing positive interactions, which triggers easier tasks or mini-games; success in these tasks rewards them with additional commands. 
+5) The gameplay loop involves navigating through mazes, completing tasks, and managing limited resources while facing escalating challenges through strategic character interactions and task completion.
+
 While there were a lot of similarities between our pitches, this meeting highlighted that we also had very different goals with the implementation of the game. Some of us were more interested in the narrative and story aspect of the game, and some of us were more interested in implementing a wide array of mechanics that would allow us to learn more skills and become more proficient programmers. Some of us were simply just interested in making sure our game would be fun to play. This led to another point of contention, leading us to once again question our justification for making this game, whether it aligned with the goals of what the Software Design Practical course was meant to teach students, and what we were trying to gain from the course as well.
 
 At this point, because of the uncertainty surrounding these aspects of the project, we were considering falling back on the back-up plans we were considering. Wahiq suggested we make a general purpose application akin to skyscanner, where if a user is looking for a particular item, the application will collate all the possible online services that can be used to purchase the item so that the user can look for a competitive price. We briefly discussed the possibility of switching to this idea, before agreeing that at this point in time, we’d gone too far to turn back. At this point, we all needed to get onto the same page.
 
 We discussed our plan moving forward and decided to limit the scope of our project to just one level. One single maze that will have all the functionalities we want to showcase. 
 
-Muskan's pitch
 
-The game will have four mini-levels, each connected by mazes:
-
-Level 1: A 2D platformer inspired by Mario, where the player navigates through a side-scrolling environment. (Inspired by [Minecraft 2D Beta)](https://www.khanacademy.org/computer-programming/minecraft-2d-beta/1450378472).
-Level 2: A Flappy Bird-style game where the player must fly through obstacles. (Inspired by [Flappy Bird Noob Version](https://khanacademy.org/computer-programming/flappy-bird-noob-version/4826118257377280)).
-Level 3: A choice-based Yes/No story game where the player faces moral decisions.
-Level 4: A final maze to complete the game.
-The journey begins with a 2D platformer inspired by Mario, where players control a blue character through a side-scrolling environment, followed by a Flappy Bird-style game that tests their skills in flying through obstacles. After these challenges, players will face a choice-based Yes/No story game, culminating in a final maze that wraps up their adventure. Throughout the game, players will encounter a green character, representing positive interactions, which triggers easier tasks or mini-games; success in these tasks rewards them with additional commands. 
- The gameplay loop involves navigating through mazes, completing tasks, and managing limited resources while facing escalating challenges through strategic character interactions and task completion.

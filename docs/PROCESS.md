@@ -128,3 +128,53 @@ The maze generating program was written in Javascript using a tutorial by Conner
 
 Resources:
 [Tutorial](https://youtu.be/nHjqkLV_Tp0?si=vMLV_VadwQ3Cwj9D)
+
+
+
+## 5th meeting (full-game pitches):
+
+The aim of this meeting was for each of us to make a pitch for the game. This pitch included a breakdown of the mechanics, story and gameplay loop.
+
+Wahiq’s pitch:
+
+![wahiq_maze_outline](https://github.com/muskananeja/project350/blob/05ed231db422b2b7dcca054a0b0ba17e518f66d4/docs/Maze_wireframe.jpg "Fig.2.1 - Possible maze framework/wireframe (made using Figma)")
+
+1) The maze will have a starting point and an exit point
+2) The blue color character is you. the green one is good and the red one is bad
+3) Interaction with the green one will trigger some easy sort of task/game and if the user wins, they will be rewarded with the commands
+4) Interaction with the red one will trigger a harder task/minigame and it can be either super hard or super easy.  
+5) Player can wish to remove/add a wall based on the scenario. player can also wish to directly pass the wall
+6) Player can also remove the beast and also pass them
+7) Commands are limited. The user might exhaust them in the first level itself and then in order to achieve more they have to interact with the green creatures.
+8) Player can switch to the red or green character and they can control them, but they can only do it for a limited number of times (99 in the screenshot is inaccurate)
+9) In total there will be multiple mazes for the player to complete
+
+Shiv’s pitch:
+
+1) Game Title: Turn Back
+2) Game starts with the player character outside an entrance. They’re met by an NPC asking them not to go through the entrance. Before the player continues their journey, the NPC gives them a sack of food, a torch and a computer
+3) As the player enters, they are asked whether or not they want to turn back. This happens multiple times during the game
+4) Basic premise: The character is being manipulated by the player to go into hell (essentially, the player is condemning the character to hell). Because the character doesn’t belong in hell, it has constructed its shape as a series of mazes to make it more difficult for the character to go further in.
+5) The penalties that the player faces depends on how many times they use the Command Line Interface tool (which they access using the computer in their inventory). With each use, the character continuously stops responding to player input, eventually starting to sabotage the player by throwing away their food, blowing out their torch, etc. 
+6) There are multiple points where the player interacts with NPCs and are asked identity affirming questions. There is already an identity for the player hard-coded into the game. Depending on how congruent the player choices are to the identity pre-defined for the character, different outcomes occur.
+7) Eventually ends after 9 CLI uses, the character completely dissociates from player input, gives a monologue about being their own being, and then walks out of hell
+
+![Shiv_pitch_concept](https://github.com/muskananeja/project350/blob/2f0da5864b6763ff43e67d1cf6b1d04f7173004f/docs/Shiv_pitch_concept.jpg "Fig 2.2 - Breakdown of Shiv's game pitch")
+
+Aditya’s pitch:
+
+1) Game surrounds a spirit trapped in hell trying to escape
+2) Spirit has the ability to control NPCs
+3) The game is split into 9 levels (akin to the nine circles of hell in Dante’s Inferno)
+4) Every level has a different biome (eg. Ice level, fire level, etc.)
+5) As the player spends time controlling each NPCs, they gradually lose their grasp and the character begins to dissociate from the player in attempts to regain their independence. 
+6) To get to the end, the player has to keep switching between NPCs to maintain control.
+7) There are multiple different types of NPCs that we can choose to “possess,” each with different types of powers they grant the player access to.
+8) Some levels will need the player to be controlling a specific type of character to get through.
+9) As the spirit gets closer to escaping hell, its power to control other creatures gets weaker, making the gameplay more challenging. This might show in ways of increasing the cooldown between switching NPCs, losing control to dissociation more rapidly or simply not being able to control some stronger NPCs.
+
+While there were a lot of similarities between our pitches, this meeting highlighted that we also had very different goals with the implementation of the game. Some of us were more interested in the narrative and story aspect of the game, and some of us were more interested in implementing a wide array of mechanics that would allow us to learn more skills and become more proficient programmers. Some of us were simply just interested in making sure our game would be fun to play. This led to another point of contention, leading us to once again question our justification for making this game, whether it aligned with the goals of what the Software Design Practical course was meant to teach students, and what we were trying to gain from the course as well.
+
+At this point, because of the uncertainty surrounding these aspects of the project, we were considering falling back on the back-up plans we were considering. Wahiq suggested we make a general purpose application akin to skyscanner, where if a user is looking for a particular item, the application will collate all the possible online services that can be used to purchase the item so that the user can look for a competitive price. We briefly discussed the possibility of switching to this idea, before agreeing that at this point in time, we’d gone too far to turn back. At this point, we all needed to get onto the same page.
+
+We discussed our plan moving forward and decided to limit the scope of our project to just one level. One single maze that will have all the functionalities we want to showcase. 

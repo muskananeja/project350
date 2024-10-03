@@ -39,6 +39,7 @@ class Main:
         self.answer_cooldown = 0
         self.black_screen_cooldown = 0
         self.tick_counter = 0
+        self.vis_check = 0
 
     def main(self, frame_size, tile):
         """
@@ -122,7 +123,10 @@ class Main:
 
             if not enemy2.frozen and enemy2.check_player(player.x, player.y, tile):
                 self.screen.fill(pygame.Color("black"))
-    
+                if self.vis_check == 0:
+                    print("The lightbug engulfs the maze into darkness. You have lost visibility")
+                    self.vis_check += 1
+
             if game.is_game_over(player):
                 self.game_over = True
                 player.left_pressed = False
@@ -130,7 +134,7 @@ class Main:
                 player.up_pressed = False
                 player.down_pressed = False
                 self.running = False
-    
+
             enemy.update(player.x, player.y, tile)
             enemy2.update(player.x, player.y, tile, maze.grid_cells,
                           maze.thickness, frame_size[0], frame_size[1])

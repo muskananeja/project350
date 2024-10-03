@@ -36,6 +36,7 @@ class Main:
         self.freeze_cooldown = 0
         self.answer_cooldown = 0
         self.black_screen_cooldown = 0
+        self.tick_counter = 0
 
     def main(self, frame_size, tile):
         """
@@ -105,6 +106,7 @@ class Main:
             if not enemy.frozen and enemy.check_player(player.x, player.y, tile):
                 if not self.game_over:
                     print("Game Over! Enemy has caught the player!")
+                    print(f"Playtime (in ticks) = {self.tick_counter}")
                 self.game_over = True
                 self.lost = True
                 self.running = False
@@ -195,7 +197,7 @@ class Main:
                     player.y = int(y) * 30
                     print(f"Teleported player to ({x}, {y}).")
                     self.is_screen_black = True
-                    self.cli_cooldown = 240
+                    self.cli_cooldown = 780
                     self.black_screen_cooldown = 600
                     return
                 except ValueError:
@@ -207,7 +209,7 @@ class Main:
                 print("Showing the answer for 5 seconds.")
                 maze.solve_maze()
                 self.show_answer = True
-                self.cli_cooldown = 240
+                self.cli_cooldown = 480
                 self.answer_cooldown = 300
                 return
             elif command == "freeze":
@@ -215,7 +217,7 @@ class Main:
                 self.enemies_frozen = True
                 enemy.frozen = True
                 enemy2.frozen = True
-                self.cli_cooldown = 240
+                self.cli_cooldown = 780
                 self.freeze_cooldown = 600
                 return
             else:
@@ -291,11 +293,15 @@ class Main:
         enemy2.frozen = False
         enemy2.speed += 5
         player.speed -= 1.75
+        if player.speed <= 0:
+            print("Your character refuses to move.")
+            player.speed = 0
 
     def update_cooldowns(self):
         """
         Responsible for updating all the cooldowns every game tick.
         """
+        self.tick_counter += 1
     
         if self.cli_cooldown > 0:
             self.cli_cooldown -= 1

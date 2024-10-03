@@ -219,6 +219,8 @@ class Main:
                 self.show_answer = True
                 self.cli_cooldown = 480
                 self.answer_cooldown = 300
+                player.lose_control()
+                player.speed = 2.5
                 cli_time_spent = time.time() - cli_start_time
                 clock.start_time += cli_time_spent
                 return

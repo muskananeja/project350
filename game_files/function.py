@@ -247,27 +247,44 @@ class Main:
         :param enemy: Enemy object.
         :param enemy2: Enemy2 object.
         """
-        instructions1 = self.font.render('Use', True, self.message_color)
+        instructions1 = self.font.render(
+            'Use',
+            True, self.message_color)
         instructions2 = self.font.render(
-            'Arrow Keys', True, self.message_color)
-        instructions3 = self.font.render('to Move', True, self.message_color)
+            'Arrow Keys',
+            True, self.message_color)
+        instructions3 = self.font.render(
+            'to Move',
+            True, self.message_color)
         commandsshow = self.font1.render(
-            'Available Commands in CLI', True, self.message_color)
+            'Available Commands in CLI',
+            True, self.message_color)
         commandslist1 = self.font1.render(
-            'teleport x y = Teleports to X, Y', True, self.message_color1)
+            'teleport x y = Teleports to X, Y',
+            True, self.message_color1)
         commandslist2 = self.font1.render(
-            'answer = Shows the Path to Exit', True, self.message_color1)
+            'answer = Shows the Path to Exit',
+            True, self.message_color1)
         commandslist3 = self.font1.render(
-            'freeze = Freezes all enemies', True, self.message_color1)
+            'freeze = Freezes all enemies',
+            True, self.message_color1)
         commandslist4 = self.font1.render(
-            'exit = Exit the CLI', True, self.message_color1)
-        playercoordinates = self.font1.render(f"Player coordinates: ({player.x // 28.75}, {player.y // 28.75})", True,
-                                              self.message_color)
-        enemycoordinates = self.font1.render(f"Enemy coordinates: ({enemy.x // 28.75}, {enemy.y // 28.75})", True,
-                                             self.message_color)
-        enemy2coordinates = self.font1.render(f"Enemy2 coordinates: ({enemy2.x // 28.75}, {enemy2.y // 28.75})", True,
-                                              self.message_color)
-
+            'exit = Exit the CLI',
+            True, self.message_color1)
+        playercoordinates = self.font1.render(
+            f"Player coordinates: ({player.x // 28.75}, {player.y // 28.75})",
+            True, self.message_color)
+        enemycoordinates = self.font1.render(
+            f"Enemy coordinates: ({enemy.x // 28.75}, {enemy.y // 28.75})",
+            True, self.message_color)
+        enemy2coordinates = self.font1.render(
+            f"Enemy2 coordinates: ({enemy2.x // 28.75}, {enemy2.y // 28.75})",
+            True, self.message_color)
+        tickcount = self.font1.render(
+            f"Current playtime (in ticks): {self.tick_counter}",
+            True, self.message_color
+        )
+    
         self.screen.blit(instructions1, (650, 300))
         self.screen.blit(instructions2, (605, 331))
         self.screen.blit(instructions3, (625, 362))
@@ -276,6 +293,7 @@ class Main:
         self.screen.blit(commandslist2, (610, 437))
         self.screen.blit(commandslist3, (610, 449))
         self.screen.blit(commandslist4, (610, 461))
+        self.screen.blit(tickcount, (610, 555))
         self.screen.blit(playercoordinates, (610, 567))
         self.screen.blit(enemycoordinates, (610, 579))
         self.screen.blit(enemy2coordinates, (610, 591))

@@ -49,10 +49,11 @@ class Player:
         self.is_losing_control = True
         self.control_loss_start_time = time.time()
 
-    def random_movement(self):
+    def random_movement(self, tile, grid_cells, thickness):
         """Randomly move the player while control is lost."""
         self.velX = random.choice([-self.speed, 0, self.speed])
         self.velY = random.choice([-self.speed, 0, self.speed])
+        self.check_move(tile, grid_cells, thickness)
 
     def check_tower(self, tower_cell, tile_size):
         """
@@ -122,7 +123,7 @@ class Player:
 
         # Handle loss of control
         if self.is_losing_control:
-            self.random_movement()
+            self.random_movement(tile, grid_cells, thickness)
             # End control loss after 10 seconds
             if time.time() - self.control_loss_start_time > self.control_loss_duration:
                 self.is_losing_control = False  # Regain control

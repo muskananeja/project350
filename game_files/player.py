@@ -1,6 +1,7 @@
-import pygame
 import random
 import time
+
+import pygame
 
 
 class Player:
@@ -128,13 +129,14 @@ class Player:
             # End control loss after 10 seconds
             if time.time() - self.control_loss_start_time > self.control_loss_duration:
                 self.is_losing_control = False  # Regain control
+                self.speed += 1
 
         else:
             # Normal movement control
-
+    
             self.velX = 0
             self.velY = 0
-
+    
             # Horizontal movement
             if self.left_pressed and not self.right_pressed:
                 self.velX = -self.speed

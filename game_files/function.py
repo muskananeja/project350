@@ -100,10 +100,14 @@ class Main:
                             player.up_pressed = False
                         if event.key == pygame.K_DOWN:
                             player.down_pressed = False
-    
+
             if self.cli_cooldown == 0 and player.check_tower(maze.tower_cell, tile):
                 self.enter_cli_mode(player, enemy, enemy2, maze, clock)
-    
+
+            if player.speed <= 0:
+                print("Your character refuses to move.")
+                player.speed = 0
+
             if not enemy.frozen and enemy.check_player(player.x, player.y, tile):
                 if not self.game_over:
                     print("Game Over! Enemy has caught the player!")
@@ -111,7 +115,7 @@ class Main:
                 self.game_over = True
                 self.lost = True
                 self.running = False
-    
+
             if not enemy2.frozen and enemy2.check_player(player.x, player.y, tile):
                 print("You have lost visibility")
                 self.screen.fill(pygame.Color("black"))
@@ -294,11 +298,11 @@ class Main:
         enemy2coordinates = self.font1.render(
             f"Enemy2 coordinates: ({enemy2.x // 28.75}, {enemy2.y // 28.75})",
             True, self.message_color)
-        tickcount = self.font1.render(
-            f"Current playtime (in ticks): {self.tick_counter}",
+        playerspeed = self.font1.render(
+            f"Current player speed: {player.speed}",
             True, self.message_color
         )
-    
+
         self.screen.blit(instructions1, (650, 300))
         self.screen.blit(instructions2, (605, 331))
         self.screen.blit(instructions3, (625, 362))
@@ -307,7 +311,7 @@ class Main:
         self.screen.blit(commandslist2, (610, 437))
         self.screen.blit(commandslist3, (610, 449))
         self.screen.blit(commandslist4, (610, 461))
-        self.screen.blit(tickcount, (610, 555))
+        self.screen.blit(playerspeed, (610, 555))
         self.screen.blit(playercoordinates, (610, 567))
         self.screen.blit(enemycoordinates, (610, 579))
         self.screen.blit(enemy2coordinates, (610, 591))
@@ -325,9 +329,6 @@ class Main:
         enemy2.frozen = False
         enemy2.speed += 5
         player.speed -= 1.75
-        if player.speed <= 0:
-            print("Your character refuses to move.")
-            player.speed = 0
 
     def update_cooldowns(self):
         """

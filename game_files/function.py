@@ -1,4 +1,5 @@
 import sys
+import time
 
 import pygame
 
@@ -101,7 +102,7 @@ class Main:
                             player.down_pressed = False
     
             if self.cli_cooldown == 0 and player.check_tower(maze.tower_cell, tile):
-                self.enter_cli_mode(player, enemy, enemy2, maze)
+                self.enter_cli_mode(player, enemy, enemy2, maze, clock)
     
             if not enemy.frozen and enemy.check_player(player.x, player.y, tile):
                 if not self.game_over:
@@ -171,24 +172,29 @@ class Main:
             self.draw_answer(maze, tile)
         pygame.display.flip()
 
-    def enter_cli_mode(self, player, enemy, enemy2, maze):
+    def enter_cli_mode(self, player, enemy, enemy2, maze, clock):
         """
         Enter CLI mode to accept commands from the player.
 
+        :param clock: Clock object, to keep track of time spent in cli and subtract it from game time
         :param player: Player object.
         :param enemy: Enemy object.
         :param enemy2: Enemy 2 (lightbug) object
         :param maze: Maze object.
         """
+        cli_start_time = time.time()
+    
         print(
             "You've reached the CLI Tower! Enter commands. Type 'exit' to resume the game.")
     
         while True:
             command = input("Enter command: ").strip().lower()
-
+        
             if command == "exit":
                 print("Exiting CLI mode.")
                 self.cli_cooldown = 240
+                cli_time_spent = time.time() - cli_start_time
+                clock.start_time += cli_time_spent
                 return
             elif command.startswith("teleport"):
                 try:
@@ -199,6 +205,8 @@ class Main:
                     self.is_screen_black = True
                     self.cli_cooldown = 780
                     self.black_screen_cooldown = 600
+                    cli_time_spent = time.time() - cli_start_time
+                    clock.start_time += cli_time_spent
                     return
                 except ValueError:
                     print("Invalid teleport command. Use 'teleport x y' format.")
@@ -211,10 +219,10 @@ class Main:
                 self.show_answer = True
                 self.cli_cooldown = 480
                 self.answer_cooldown = 300
-                self.answer_start_time = pygame.time.get_ticks()
                 player.lose_control()
                 player.speed = 2.5
-
+                cli_time_spent = time.time() - cli_start_time
+                clock.start_time += cli_time_spent
                 return
             elif command == "freeze":
                 print("Freezing all enemies for 10 seconds.")
@@ -223,6 +231,8 @@ class Main:
                 enemy2.frozen = True
                 self.cli_cooldown = 780
                 self.freeze_cooldown = 600
+                cli_time_spent = time.time() - cli_start_time
+                clock.start_time += cli_time_spent
                 return
             else:
                 print(
@@ -251,27 +261,44 @@ class Main:
         :param enemy: Enemy object.
         :param enemy2: Enemy2 object.
         """
-        instructions1 = self.font.render('Use', True, self.message_color)
+        instructions1 = self.font.render(
+            'Use',
+            True, self.message_color)
         instructions2 = self.font.render(
-            'Arrow Keys', True, self.message_color)
-        instructions3 = self.font.render('to Move', True, self.message_color)
+            'Arrow Keys',
+            True, self.message_color)
+        instructions3 = self.font.render(
+            'to Move',
+            True, self.message_color)
         commandsshow = self.font1.render(
-            'Available Commands in CLI', True, self.message_color)
+            'Available Commands in CLI',
+            True, self.message_color)
         commandslist1 = self.font1.render(
-            'teleport x y = Teleports to X, Y', True, self.message_color1)
+            'teleport x y = Teleports to X, Y',
+            True, self.message_color1)
         commandslist2 = self.font1.render(
-            'answer = Shows the Path to Exit', True, self.message_color1)
+            'answer = Shows the Path to Exit',
+            True, self.message_color1)
         commandslist3 = self.font1.render(
-            'freeze = Freezes all enemies', True, self.message_color1)
+            'freeze = Freezes all enemies',
+            True, self.message_color1)
         commandslist4 = self.font1.render(
-            'exit = Exit the CLI', True, self.message_color1)
-        playercoordinates = self.font1.render(f"Player coordinates: ({player.x // 28.75}, {player.y // 28.75})", True,
-                                              self.message_color)
-        enemycoordinates = self.font1.render(f"Enemy coordinates: ({enemy.x // 28.75}, {enemy.y // 28.75})", True,
-                                             self.message_color)
-        enemy2coordinates = self.font1.render(f"Enemy2 coordinates: ({enemy2.x // 28.75}, {enemy2.y // 28.75})", True,
-                                              self.message_color)
-
+            'exit = Exit the CLI',
+            True, self.message_color1)
+        playercoordinates = self.font1.render(
+            f"Player coordinates: ({player.x // 28.75}, {player.y // 28.75})",
+            True, self.message_color)
+        enemycoordinates = self.font1.render(
+            f"Enemy coordinates: ({enemy.x // 28.75}, {enemy.y // 28.75})",
+            True, self.message_color)
+        enemy2coordinates = self.font1.render(
+            f"Enemy2 coordinates: ({enemy2.x // 28.75}, {enemy2.y // 28.75})",
+            True, self.message_color)
+        tickcount = self.font1.render(
+            f"Current playtime (in ticks): {self.tick_counter}",
+            True, self.message_color
+        )
+    
         self.screen.blit(instructions1, (650, 300))
         self.screen.blit(instructions2, (605, 331))
         self.screen.blit(instructions3, (625, 362))
@@ -280,6 +307,7 @@ class Main:
         self.screen.blit(commandslist2, (610, 437))
         self.screen.blit(commandslist3, (610, 449))
         self.screen.blit(commandslist4, (610, 461))
+        self.screen.blit(tickcount, (610, 555))
         self.screen.blit(playercoordinates, (610, 567))
         self.screen.blit(enemycoordinates, (610, 579))
         self.screen.blit(enemy2coordinates, (610, 591))

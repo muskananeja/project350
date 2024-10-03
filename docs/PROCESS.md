@@ -178,3 +178,14 @@ While there were a lot of similarities between our pitches, this meeting highlig
 At this point, because of the uncertainty surrounding these aspects of the project, we were considering falling back on the back-up plans we were considering. Wahiq suggested we make a general purpose application akin to skyscanner, where if a user is looking for a particular item, the application will collate all the possible online services that can be used to purchase the item so that the user can look for a competitive price. We briefly discussed the possibility of switching to this idea, before agreeing that at this point in time, we’d gone too far to turn back. At this point, we all needed to get onto the same page.
 
 We discussed our plan moving forward and decided to limit the scope of our project to just one level. One single maze that will have all the functionalities we want to showcase. 
+
+Muskan's pitch
+
+The game will have four mini-levels, each connected by mazes:
+
+Level 1: A 2D platformer inspired by Mario, where the player navigates through a side-scrolling environment. (Inspired by Minecraft 2D Beta).
+Level 2: A Flappy Bird-style game where the player must fly through obstacles. (Inspired by Flappy Bird Noob Version).
+Level 3: A choice-based Yes/No story game where the player faces moral decisions.
+Level 4: A final maze to complete the game.
+The journey begins with a 2D platformer inspired by Mario, where players control a blue character through a side-scrolling environment, followed by a Flappy Bird-style game that tests their skills in flying through obstacles. After these challenges, players will face a choice-based Yes/No story game, culminating in a final maze that wraps up their adventure. Throughout the game, players will encounter a green character, representing positive interactions, which triggers easier tasks or mini-games; success in these tasks rewards them with additional commands. 
+ The gameplay loop involves navigating through mazes, completing tasks, and managing limited resources while facing escalating challenges through strategic character interactions and task completion.

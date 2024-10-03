@@ -196,3 +196,37 @@ At this point, because of the uncertainty surrounding these aspects of the proje
 We discussed our plan moving forward and decided to limit the scope of our project to just one level. One single maze that will have all the functionalities we want to showcase. 
 
 
+## 6th meeting (mechanics pitches):
+
+The aim of this meeting was to pitch specific mechanics we wanted to implement for the one level maze we’d be showcasing for the final presentation. Based on what we’d agreed on, the maze design would be as follows:
+
+- A procedurally generated maze with a centroid area, and two sections separated by a gate
+- An exit area
+- Possibly one NPC
+- At least one enemy
+- Possibility for minigame interactions between the character and the NPCs in order to get the key for the gate
+
+This seemed like a good idea, though a potential concern was whether we could guarantee that the centroid area and gate would be reachable from the start of the maze. A proposed solution to the gate concern was to have the whole maze be a combination of two separately generated mazes, with the starting cell of the second maze being set adjacent to the to the ending cell of the first maze.
+
+Using this as a basis, we pitched mechanics that we thought would be implementable and could add to the idea of dissociation. The way it was broken down was into two categories: power-ups and penalties. Here were the following proposals:
+
+- Power-up: Teleport
+    - Penalty: Screen goes dark
+- Power-up: Freeze enemies
+    - Penalty: Extra enemy spawns
+- Power-up: Show the solution to the maze
+    - Penalty: Player loses control for a bit
+
+Some other proposed penalties included:
+- Spikes/hazards spawning randomly
+- Player gets randomly teleported
+- Enemies move faster
+
+There was also a proposed idea to have pads randomly placed around a maze that’s split into multiple sections that the player could use to teleport between different maze areas. A question that still permeated our mind was how to dissociate the player from the character. 
+
+We continued to discuss the idea of implementing a mechanic that allowed the player to take control of different characters within the maze. Something that seemed interesting was to see how a mechanic like that could be utilized along with the Command Line power-ups. For example, if a player is currently controlling a character of the enemy class, and then uses the freeze enemy power-up, they would also freeze due to them currently being in control of an enemy. 
+
+From this discussion, we made a semi-final decision on what kind of mechanics we were going to implement, and following this, our goal was to find resources/methods that could help us implement these mechanics for our game.
+
+
+

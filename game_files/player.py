@@ -51,6 +51,7 @@ class Player:
 
     def random_movement(self, tile, grid_cells, thickness):
         """Randomly move the player while control is lost."""
+        self.speed = 1.5
         self.velX = random.choice([-self.speed, 0, self.speed])
         self.velY = random.choice([-self.speed, 0, self.speed])
         self.check_move(tile, grid_cells, thickness)

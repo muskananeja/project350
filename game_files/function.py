@@ -206,7 +206,7 @@ class Main:
                 maze.solve_maze()
                 self.show_answer = True
                 self.answer_start_time = pygame.time.get_ticks()
-                self.cli_cooldown = 240
+                self.cli_cooldown = 10000
                 player.lose_control()
                 return
             elif command == "freeze":

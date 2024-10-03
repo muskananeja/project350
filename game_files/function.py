@@ -121,7 +121,6 @@ class Main:
                 self.running = False
 
             if not enemy2.frozen and enemy2.check_player(player.x, player.y, tile):
-                print("You have lost visibility")
                 self.screen.fill(pygame.Color("black"))
     
             if game.is_game_over(player):

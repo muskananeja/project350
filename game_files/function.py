@@ -48,7 +48,10 @@ class Main:
         game = Game(maze.grid_cells[-1], tile)
         player = Player(tile // 3, tile // 3)
         enemy = Enemy(15 * tile, 15 * tile)
-        enemy2 = Enemy2(10 * tile, 9 * tile)
+
+        if self.in_cli == True:
+            enemy2 = Enemy2(10 * tile, 9 * tile)
+        
         clock = Clock()
 
         maze.generate_maze()

@@ -1,5 +1,6 @@
-import pygame
 import random
+
+import pygame
 
 
 class Enemy2:
@@ -23,8 +24,8 @@ class Enemy2:
         self.move_delay = 0.5
         self.image_path = 'img/bug.png'
         self.image = pygame.image.load(self.image_path)
-        self.image = pygame.transform.scale(
-            self.image, (self.enemy_size, self.enemy_size))
+        self.image = pygame.transform.scale(self.image, (self.enemy_size, self.enemy_size))
+        self.frozen = False
 
     def check_player(self, player_x, player_y, tile_size, margin=75):
         """
@@ -156,3 +157,6 @@ class Enemy2:
                 self.y = screen_height - self.enemy_size
 
         self.rect.topleft = (int(self.x), int(self.y))
+
+        if self.frozen:
+            self.speed = 0

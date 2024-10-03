@@ -30,12 +30,12 @@ class Main:
         self.FPS = pygame.time.Clock()
         self.cli_cooldown = 0
         self.is_screen_black = False
-        self.black_screen_start_time = None
         self.lost = False
         self.show_answer = False
-        self.answer_start_time = None
         self.enemies_frozen = False
-        self.freeze_start_time = None
+        self.freeze_cooldown = 0
+        self.answer_cooldown = 0
+        self.black_screen_cooldown = 0
 
     def main(self, frame_size, tile):
         """
@@ -56,22 +56,21 @@ class Main:
         clock.start_timer()
 
         while self.running:
-            if self.is_screen_black and (pygame.time.get_ticks() - self.black_screen_start_time) > 10000:
+            self.update_cooldowns()
+    
+            if self.is_screen_black and self.black_screen_cooldown == 0:
                 self.is_screen_black = False
     
-            if self.show_answer and (pygame.time.get_ticks() - self.answer_start_time) > 10000:
+            if self.show_answer and self.answer_cooldown == 0:
                 self.show_answer = False
     
-            if self.enemies_frozen and (pygame.time.get_ticks() - self.freeze_start_time) > 15000:
+            if self.enemies_frozen and self.freeze_cooldown == 0:
                 print("Enemies unfrozen, and angry. RUN!!!")
                 self.enemies_frozen = False
                 self.freeze_penalty(enemy, enemy2, player)
     
             self.screen.fill("black" if self.is_screen_black else "gray")
             self.screen.fill(pygame.Color("black"), (603, 0, 752, 752))
-    
-            if self.cli_cooldown > 0:
-                self.cli_cooldown -= 1
     
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -196,8 +195,8 @@ class Main:
                     player.y = int(y) * 30
                     print(f"Teleported player to ({x}, {y}).")
                     self.is_screen_black = True
-                    self.black_screen_start_time = pygame.time.get_ticks()
                     self.cli_cooldown = 240
+                    self.black_screen_cooldown = 600
                     return
                 except ValueError:
                     print("Invalid teleport command. Use 'teleport x y' format.")
@@ -208,16 +207,16 @@ class Main:
                 print("Showing the answer for 5 seconds.")
                 maze.solve_maze()
                 self.show_answer = True
-                self.answer_start_time = pygame.time.get_ticks()
                 self.cli_cooldown = 240
+                self.answer_cooldown = 300
                 return
             elif command == "freeze":
                 print("Freezing all enemies for 10 seconds.")
                 self.enemies_frozen = True
                 enemy.frozen = True
                 enemy2.frozen = True
-                self.freeze_start_time = pygame.time.get_ticks()
                 self.cli_cooldown = 240
+                self.freeze_cooldown = 600
                 return
             else:
                 print(
@@ -292,3 +291,20 @@ class Main:
         enemy2.frozen = False
         enemy2.speed += 5
         player.speed -= 1.75
+
+    def update_cooldowns(self):
+        """
+        Responsible for updating all the cooldowns every game tick.
+        """
+    
+        if self.cli_cooldown > 0:
+            self.cli_cooldown -= 1
+    
+        if self.freeze_cooldown > 0:
+            self.freeze_cooldown -= 1
+    
+        if self.answer_cooldown > 0:
+            self.answer_cooldown -= 1
+    
+        if self.black_screen_cooldown > 0:
+            self.black_screen_cooldown -= 1

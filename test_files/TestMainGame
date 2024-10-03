@@ -1,0 +1,63 @@
+import unittest
+import pygame
+from game_files.maze import Maze
+from game_files.player import Player
+from game_files.enemy import Enemy
+from main import Main  
+from game_files.cell import Cell
+
+class TestMainGame(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        pygame.init()
+        cls.screen = pygame.display.set_mode((800, 600))
+        cls.game = Main(cls.screen)
+
+    def test_initialization(self):
+        self.assertIsInstance(self.game, Main)
+        self.assertEqual(self.game.screen, self.screen)
+        self.assertTrue(self.game.running)
+        self.assertFalse(self.game.game_over)
+
+    def test_maze_initialization(self):
+        cols, rows = 20, 20
+        maze = Maze(cols, rows)
+        maze.generate_maze()
+        self.assertEqual(len(maze.grid_cells), cols * rows)
+        self.assertIsNotNone(maze.tower_cell) 
+        self.assertTrue(maze.tower_cell.is_tower)
+    def test_player_initialization(self):
+        player = Player(10, 10)
+        self.assertEqual(player.x, 10)
+        self.assertEqual(player.y, 10)
+
+    def test_enemy_initialization(self):
+        enemy = Enemy(300, 300)
+        self.assertEqual(enemy.x, 300)
+        self.assertEqual(enemy.y, 300)
+
+    def test_player_movement(self):
+        player = Player(30, 30)
+        player.move_left()
+        self.assertEqual(player.x, 0)
+        player.move_right()
+        self.assertEqual(player.x, 30)
+        player.move_up()
+        self.assertEqual(player.y, 0)
+        player.move_down()
+        self.assertEqual(player.y, 30)
+
+    def test_game_over_conditions(self):
+        player = Player(30, 30)
+        enemy = Enemy(30, 30)
+        self.assertTrue(enemy.check_player(player.x, player.y, 30))
+        self.game.game_over = self.game.game_over or enemy.check_player(player.x, player.y, 30)
+        self.assertTrue(self.game.game_over)
+
+    @classmethod
+    def tearDownClass(cls):
+        pygame.quit()
+
+if __name__ == "__main__":
+    unittest.main()

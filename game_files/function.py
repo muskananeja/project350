@@ -35,6 +35,7 @@ class Main:
         self.enemies_frozen = False
         self.freeze_start_time = None
         self.in_cli = False
+        self.enemy2_spawn = False
 
     def main(self, frame_size, tile):
         """
@@ -51,6 +52,7 @@ class Main:
 
         if self.in_cli == True:
             enemy2 = Enemy2(10 * tile, 9 * tile)
+            enemy2_spawn = True
         
         clock = Clock()
 
@@ -112,9 +114,12 @@ class Main:
                 self.lost = True
                 self.running = False
 
-            if enemy2.check_player(player.x, player.y, tile):
-                print("You have lost visibility")
-                self.screen.fill(pygame.Color("black"))
+            if self.enemy2_spawn:
+                if enemy2.check_player(player.x, player.y, tile):
+                    print("You have lost visibility")
+                    self.screen.fill(pygame.Color("black"))
+                    enemy2.update(player.x, player.y, tile, maze.grid_cells,
+                          maze.thickness, frame_size[0], frame_size[1])
 
             if game.is_game_over(player):
                 self.game_over = True
@@ -125,8 +130,7 @@ class Main:
                 self.running = False
 
             enemy.update(player.x, player.y, tile)
-            enemy2.update(player.x, player.y, tile, maze.grid_cells,
-                          maze.thickness, frame_size[0], frame_size[1])
+
             player.update(tile, maze.grid_cells, 2)
 
             self._draw(maze, tile, player, game, clock, enemy, enemy2)

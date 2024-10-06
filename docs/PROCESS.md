@@ -230,3 +230,112 @@ From this discussion, we made a semi-final decision on what kind of mechanics we
 
 
 
+## 7th meeting (progress update):
+
+7th meeting (progress update):
+The aim of this meeting was to get an update on methods to implement the discussed mechanics. 
+At this point, it was decided that we switch from js for our front and backend, instead using python and the pygame library. 
+
+During this meeting it was also suggested we alter the maze generation algorithm. A reason we couldn’t continue with the previous implementation was because:
+1) We couldn’t figure out a way to generate that central area that would house the CLI
+2) We couldn’t guarantee that every maze generated would have a path to all the areas we wanted the player to be able to reach
+
+As such, it was proposed that instead of running a DFS as a method to generate the maze, if we considered the maze to be a series of edges and vertices that make up a graph, how the vertices got connected together would generate a maze. Because of this, any maze cell, which at max can be bounded by four edges, could always be represented by one of 16 values depending on which edges of the cell were ‘active’, ie. which sides of the cell had walls. Using this idea to set-up the bones of the maze, we could use a recursive backtracking algorithm to generate the maze in such a way that there is always a solution. 
+
+By thinking of the maze as something made up of discrete cells, we could also make it so things we wanted to add like the CLI or a reward or enemy could randomly spawn in any cell within the maze. 
+
+All of this seemed quite promising, but a problem that was raised in class was one of redundancy. With our proposed framework, if two cells were together that had a wall between them, such a configuration would be possible if both cells had that adjoining wall as an ‘active’ edge, or simply if one cell did. As such, there would be a possibility of generating the exact same maze despite the cells constituting that maze being represented by different values. As such, it was recommended we think of the cells as the vertices and the edges from each vertex as the possible paths that can be taken from a given cell.
+
+
+
+## Implementation meetings:
+
+This log accounts for a series of meetings that we had as a group to go over implementing mechanics.
+
+Command Line Interface:
+
+- Rationale:
+    - The CLI mechanic harkens back to some of the earliest mechanics ideas we had for the game, but also acts as a neat way to sort of incorporate a narrative reason for having the character dissociate from player input.
+
+    - The idea of the Command Line was to sort of give the player a way to ‘mess’ with the game and as such, cause issues to arise. While that initial idea sort of drifted away, now the role that the Command Line takes up is one that exposes the character to the inner workings of the game every time the player uses a command. It works sort of like a moment where the character is able to see the code of the Matrix. This gives them enough incentive/ability to not only break away from the player control, but also try to sabotage the player.
+
+- Implementation:
+
+    - The basic implementation of the CLI mode is handled through the enter_cli_mode function. When activated, this function pauses the main game loop and starts a continuous input loop, allowing the player to type commands.
+
+    - Initially, we wanted the Command Line to be accessed entirely through the game through something like a pop-up menu or additional window, but after implementing it through such that the player inputs commands in the actual terminal, we realized we enjoyed the disconnect that the player has to make in order to input a command in the terminal.
+
+Enemy 1 and Enemy 2:
+
+- Rationale:
+
+    - The rationale for the enemy mechanics were to provide the player more incentives to either finish the game, or in the instance that they’re not able to make it to the end, use the CLI. 
+
+- Implementation:
+
+    - The Enemy1 class is implemented using the Enemy class, which initializes its position, size, and movement attributes. The enemy checks its position relative to the player using the check_player method, which determines if it has reached the player based on their grid positions.
+
+    - The Enemy2 class is built similarly to Enemy1, but with a few key differences in behavior. It has its own check_player method that checks if it is within a specified margin of the player, allowing it to react differently compared to Enemy1.
+
+    - The enemy moves towards the player in the update method, but it also includes logic to prevent it from moving through walls. The check_move method verifies the enemy's current position in the grid and adjusts its movement if it detects walls nearby, using the redirect_movement method to select a new random direction if movement in the intended direction is blocked.
+
+The Commands:
+
+- Rationale:
+
+    - The idea of the commands was to give the player a power-up that they could use to their own volition, but more importantly, incentivise usage of the Command Line feature. The power-ups themselves didn’t need to be anything specific, so we just focused on trying to add things that we felt were possible to implement given the amount of time we had.
+    
+1) Teleport:
+
+- Implementation:
+
+    - The teleport command requires the player to provide an x and y coordinate to enter in order to teleport to a particular cell. Their inputs are scaled by a factor of 30 to fit the specifications of the maze’s grid space and then the player’s position is updated to match the player’s input.
+
+2) Answer:
+
+- Implementation:
+
+    - The answer command utilizes the solve_maze function in the maze file, which implements a DFS to search through the grid cells in order to find a valid solution to the maze, which then gets highlighted to the player.
+
+3) Freeze:
+
+- Implementation:
+
+    - The freeze command simply sets the enemy speeds to 0.
+
+The Penalties: 
+
+1) Lose Visibility:
+
+- Rationale:
+
+    - The rationale for this penalty would be that the character in taking control for a moment, purposely blows out their torch as an attempt to sabotage the player
+
+- Implementation:
+
+    - Initial idea was to only limit the scope of what the player would be able to see. This would mean that there would be an area encompassing the player that would still be visible but the rest of the maze wouldn’t.
+    - Ultimately though, we realized it was simpler to just make the maze background entirely black rather than implementing a reduced visibility parameter, as all we needed to do for that was add a flag for when the maze background was black, and a function to change the maze background to black whenever the teleport command was used.
+
+2) Random Movement:
+
+- Rationale:
+
+    - The purpose of this penalty was to make it seem like the character was taking control of their own movement for a brief period of time, not allowing the player to control them.
+
+- Implementation:
+
+    - The basic implementation of this mechanic simply used a function that would generate random movements for the character when called. This was ultimately the implementation we’ve stuck with, but the final outcome could certainly be improved. A lot of us thought that with this implementation, the character moved too erratically and as such, their movement didn’t seem very deliberate. A proposed solution was to augment the maze solving function to use the character’s current position as the starting point, and the start of the maze as the ending point, in order to find a path from the current player position to the beginning of the maze, and have the character follow that path. Ultimately, this didn’t seem too fruitful a path and was ultimately scrapped.
+
+3) Slow Player Speed/Increase Enemy Speed:
+
+- Rationale:
+
+    - The rationale for this penalty was twofold:
+        - Actually make the game much harder
+        - Add to the dissociation aspect
+
+    - For these reasons, we chose to not just have the character move slower as a means of sabotaging the player, but also have the enemies get much faster to make it harder for the player. In terms of how it’s currently been implemented, it feels like unless the player can reach the ending within the freeze-enemy cooldown or at least a few seconds after it, they’re very likely to get caught by enemy1. 
+
+- Implementation:
+
+    - Implementation for this mechanic was fairly straightforward with the freeze_penalty function. When this function gets called, the enemy frozen flags get set to False and the enemy and player speeds get updated to match the goals of the penalty.
